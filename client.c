@@ -5,6 +5,7 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -22,13 +23,13 @@ int server_behandlung (int server)
 
   for (x = 0; x < 2; x++)
   {
-    if (send(server, request, sizeof(request), 0) == -1)
+    if (send(server, request, strlen(request), 0) == -1)
     {
-        printf("Feler");
+        printf("Fehler");
         perror("send() failed");
         return 1;
     }
-
+    printf ("gesendet");
     bytes = recv(server, buffer, sizeof(buffer), 0);
      if (bytes == -1)
        return -1;

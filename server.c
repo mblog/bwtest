@@ -28,9 +28,11 @@ int client_behandlung(int client)
 
   //while (now-start < 10)
   //{
-    while((bytes = recv(client, request, strlen(request), 0)) > 0)
-        send(client, buffer, strlen(buffer), 0);
-
+    while((bytes = recv(client, request, sizeof(request), 0)) > 0)
+    {
+        printf("senden");
+	send(client, buffer, strlen(buffer), 0);
+    }
     //bytes = send(client, buffer, strlen(buffer), 0);
     //now = time(NULL);
   //}

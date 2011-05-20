@@ -5,16 +5,29 @@
 */
 
 #include <stdio.h>
-
+#include <string.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#define BUFFER_SIZE 1024
+
+
 /* ------------------------------ */
 
 void client_behandlung(int client)
 {
+  char buffer[BUFFER_SIZE];
+  int bytes, x;
+
+  strcpy(buffer, "Test");  
+
+  bytes = send(client, buffer, strlen(buffer), 0);
+  //if (bytes == -1)
+  //  return -1;
+
+
 }
 
 /* ------------------------------ */

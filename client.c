@@ -10,9 +10,28 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#define BUFFER_SIZE 1024
 
 /* ------------------------------ */
 
+void server_behandlung (int server)
+{
+  char buffer[BUFFER_SIZE];
+  int bytes;
+
+  bytes = recv(server, buffer, sizeof(buffer) - 1, 0);
+   //if (bytes == -1)
+   //  return -1;
+  buffer[bytes] = '\0';
+
+  printf("%s", buffer);
+
+  //return 0;
+
+}
+
+
+/* ------------------------------ */
 
 int main (int argc, char *argv[])
 {
@@ -38,7 +57,7 @@ int main (int argc, char *argv[])
     return 2;
   }
 
-  
+  server_behandlung(s);   
 
 
   close();

@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <time.h>
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -16,18 +18,24 @@
 
 /* ------------------------------ */
 
-void client_behandlung(int client)
+int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
+  char request[10];
   int bytes, x;
 
-  strcpy(buffer, "Test");  
+  strcpy(buffer, "Bandbreiten Test");  
 
-  bytes = send(client, buffer, strlen(buffer), 0);
-  //if (bytes == -1)
-  //  return -1;
+  //while (now-start < 10)
+  //{
+    while((bytes = recv(client, request, strlen(request), 0)) > 0)
+        send(client, buffer, strlen(buffer), 0);
 
-
+    //bytes = send(client, buffer, strlen(buffer), 0);
+    //now = time(NULL);
+  //}
+  if (bytes == -1)
+    return -1;
 }
 
 /* ------------------------------ */
@@ -66,13 +74,19 @@ int main (int argc, char *argv[])
   }
 
   // Accept Client Connection
-  cli_size = sizeof(cli);
-  //c = accept(s, &cli, &cli_size);
   for(;;)
   {
+    cli_size = sizeof(cli);
     c = accept(s, (struct sockaddr *)&cli, &cli_size);
-    printf("Verbindung von %s\n", inet_ntoa(cli.sin_addr));
-    client_behandlung(c);
+    if (c == -1)
+      {
+	perror("accept() failed");
+	return 5;
+      }
+    printf("client from %s\n", inet_ntoa(cli.sin_addr));
+    // printf("Verbindung von %s\n", inet_ntoa(cli.sin_addr));
+    if (client_behandlung(c) == -1)
+	fprintf(stderr, "%s: client_behandlung() failed", argv[0]);
     close(c);
   }
 

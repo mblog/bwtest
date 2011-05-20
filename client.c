@@ -14,19 +14,31 @@
 
 /* ------------------------------ */
 
-void server_behandlung (int server)
+int server_behandlung (int server)
 {
   char buffer[BUFFER_SIZE];
-  int bytes;
+  char request[] = "request";
+  int bytes, x;
 
-  bytes = recv(server, buffer, sizeof(buffer) - 1, 0);
-   //if (bytes == -1)
-   //  return -1;
-  buffer[bytes] = '\0';
+  for (x = 0; x < 2; x++)
+  {
+    if (send(server, request, sizeof(request), 0) == -1)
+    {
+        printf("Feler");
+        perror("send() failed");
+        return 1;
+    }
 
-  printf("%s", buffer);
+    bytes = recv(server, buffer, sizeof(buffer), 0);
+     if (bytes == -1)
+       return -1;
+    buffer[bytes] = '\0';
 
-  //return 0;
+    printf("%s\n", buffer);
+    printf("%d Bytes\n", bytes);
+  }
+
+  return 0;
 
 }
 

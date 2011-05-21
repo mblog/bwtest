@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -19,9 +20,14 @@ int server_behandlung (int server)
 {
   char buffer[BUFFER_SIZE];
   char request[] = "request";
-  int bytes, x;
+  int bytes, x, gesamt_bytes;
+  time_t start;
 
-  for (x = 0; x < 2; x++)
+  start = time(NULL); 
+  gesamt_bytes = 0;
+
+  //for (x = 0; x < 2; x++)
+  while (time(NULL)-start <= 5)
   {
     if (send(server, request, strlen(request), 0) == -1)
     {
@@ -34,10 +40,13 @@ int server_behandlung (int server)
        return -1;
     buffer[bytes] = '\0';
 
-    printf("%s\n", buffer);
-    printf("%d Bytes\n", bytes);
+    //printf("%s\n", buffer);
+    //printf("%d Bytes\n", bytes);
+    gesamt_bytes = gesamt_bytes + bytes;
   }
-
+  
+  
+  printf("Bandbreite: %d\n", (gesamt_bytes/5)*8); 
   return 0;
 
 }

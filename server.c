@@ -7,8 +7,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <time.h>
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -22,20 +20,15 @@ int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
   char request[10];
-  int bytes, x;
+  int bytes;
 
   strcpy(buffer, "Bandbreiten Test");  
 
-  //while (now-start < 10)
-  //{
-    while((bytes = recv(client, request, sizeof(request), 0)) > 0)
-    {
-        printf("senden");
-	send(client, buffer, strlen(buffer), 0);
-    }
-    //bytes = send(client, buffer, strlen(buffer), 0);
-    //now = time(NULL);
-  //}
+  while((bytes = recv(client, request, sizeof(request), 0)) > 0)
+  {
+    printf("senden");
+    send(client, buffer, strlen(buffer), 0);
+  }
   if (bytes == -1)
     return -1;
 }

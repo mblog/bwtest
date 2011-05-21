@@ -29,7 +29,6 @@ int server_behandlung (int server)
         perror("send() failed");
         return 1;
     }
-    printf ("gesendet");
     bytes = recv(server, buffer, sizeof(buffer), 0);
      if (bytes == -1)
        return -1;
@@ -71,7 +70,6 @@ int main (int argc, char *argv[])
   }
 
   server_behandlung(s);   
-
 
   close();
 

@@ -20,13 +20,17 @@ int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
   char request[10];
-  int bytes;
+  int bytes, x;
 
-  strcpy(buffer, "Bandbreiten Test");  
+  for(x = 0; x < BUFFER_SIZE-10; x++)
+  {
+    //strcpy(buffer, "Q");
+    buffer[x] = 'Q'; 
+  }
 
+  printf ("%d\n", strlen(buffer));
   while((bytes = recv(client, request, sizeof(request), 0)) > 0)
   {
-    printf("senden");
     send(client, buffer, strlen(buffer), 0);
   }
   if (bytes == -1)

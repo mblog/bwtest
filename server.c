@@ -22,10 +22,12 @@ int client_behandlung(int client)
   int bytes, x;
 
   // Create Buffer
-  for(x = 0; x < BUFFER_SIZE-2; x++)
+  for(x = 0; x < (BUFFER_SIZE-3); x++)
   {
     buffer[x] = 'Q'; 
   }
+
+  printf("Buffer-Size: %d\n", strlen(buffer));
 
   // Send buffer if request received
   while((bytes = recv(client, request, sizeof(request), 0)) > 0)

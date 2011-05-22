@@ -20,37 +20,30 @@ int server_behandlung (int server)
 {
   char buffer[BUFFER_SIZE];
   char request[] = "request";
-  int bytes, x, gesamt_bytes;
+  int bytes, x, recv_bytes;
   time_t start;
 
   start = time(NULL); 
-  gesamt_bytes = 0;
+  recv_bytes = 0;
 
-  //for (x = 0; x < 2; x++)
   while (time(NULL)-start <= 5)
   {
     if (send(server, request, strlen(request), 0) == -1)
     {
-        printf("Fehler");
         perror("send() failed");
-        return 1;
+        return -1;
     }
     bytes = recv(server, buffer, sizeof(buffer), 0);
      if (bytes == -1)
-       return -1;
+       return -2;
     buffer[bytes] = '\0';
 
-    //printf("%s\n", buffer);
-    //printf("%d Bytes\n", bytes);
-    gesamt_bytes = gesamt_bytes + bytes;
+    recv_bytes += bytes;
   }
-  
-  
-  printf("Bandbreite: %d\n", (gesamt_bytes/5)*8); 
+
+  printf("Bandbreite: %d\n", (recv_bytes/5)*8); 
   return 0;
-
 }
-
 
 /* ------------------------------ */
 
@@ -78,7 +71,8 @@ int main (int argc, char *argv[])
     return 2;
   }
 
-  server_behandlung(s);   
+  // ToDo
+  server_behandlung(s);
 
   close();
 

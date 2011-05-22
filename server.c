@@ -13,7 +13,6 @@
 
 #define BUFFER_SIZE 1024
 
-
 /* ------------------------------ */
 
 int client_behandlung(int client)
@@ -22,13 +21,13 @@ int client_behandlung(int client)
   char request[10];
   int bytes, x;
 
-  for(x = 0; x < BUFFER_SIZE-10; x++)
+  // Create Buffer
+  for(x = 0; x < BUFFER_SIZE-2; x++)
   {
-    //strcpy(buffer, "Q");
     buffer[x] = 'Q'; 
   }
 
-  printf ("%d\n", strlen(buffer));
+  // Send buffer if request received
   while((bytes = recv(client, request, sizeof(request), 0)) > 0)
   {
     send(client, buffer, strlen(buffer), 0);
@@ -45,9 +44,8 @@ int main (int argc, char *argv[])
   struct sockaddr_in cli;
   int cli_size;
 
-
-  addr.sin_addr.s_addr = INADDR_ANY;	/* z.B. inet_addr("127.0.0.1"); */
-  addr.sin_port = htons(5001); 		/* z.B. htons(80);              */
+  addr.sin_addr.s_addr = INADDR_ANY;
+  addr.sin_port = htons(5001);
   addr.sin_family = AF_INET;
 
   // Create Socket
@@ -83,7 +81,6 @@ int main (int argc, char *argv[])
 	return 5;
       }
     printf("client from %s\n", inet_ntoa(cli.sin_addr));
-    // printf("Verbindung von %s\n", inet_ntoa(cli.sin_addr));
     if (client_behandlung(c) == -1)
 	fprintf(stderr, "%s: client_behandlung() failed", argv[0]);
     close(c);

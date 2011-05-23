@@ -13,9 +13,33 @@
 
 #define BUFFER_SIZE 1024
 
+/* --------- prototypes --------- */
+
+// Todo if client connects
+int client_behandlung(int client);
+
+// Send Test
+int send_bwtest(int client);
+
+// Recv Test
+int recv_bwtest (int client);
+
 /* ------------------------------ */
 
 int client_behandlung(int client)
+{
+  // First a Download-Test (from client view)
+  if (send_bwtest(client) != 0)
+	return 1;
+
+  // Upload-Test (from client view)
+  if (recv_bwtest(client) != 0)
+	return 1;
+
+  return 0;
+}
+
+int send_bwtest (int client)
 {
   char buffer[BUFFER_SIZE];
   char request[10];
@@ -24,7 +48,7 @@ int client_behandlung(int client)
   // Create Buffer
   for(x = 0; x < (BUFFER_SIZE-3); x++)
   {
-    buffer[x] = 'Q'; 
+    buffer[x] = 'Q';
   }
 
   printf("Buffer-Size: %d\n", strlen(buffer));
@@ -35,7 +59,13 @@ int client_behandlung(int client)
     send(client, buffer, strlen(buffer), 0);
   }
   if (bytes == -1)
-    return -1;
+    return 1;
+  return 0;
+}
+
+int recv_bwtest (int client)
+{
+  return 0;
 }
 
 /* ------------------------------ */
@@ -80,7 +110,7 @@ int main (int argc, char *argv[])
     if (c == -1)
       {
 	perror("accept() failed");
-	return 5;
+	return 4;
       }
     printf("client from %s\n", inet_ntoa(cli.sin_addr));
     if (client_behandlung(c) == -1)

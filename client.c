@@ -14,16 +14,40 @@
 
 #define BUFFER_SIZE 1024
 
+/* --------- prototypes --------- */
+
+/* Run Tests with Server */
+int bwtest(int server);
+
+/* Download(Receive) Test */
+int recv_bwtest(int server);
+
+/* Upload(send) Test */
+int send_bwtest(int server);
+
 /* ------------------------------ */
 
-int server_behandlung (int server)
+int bwtest (int server)
+{
+  // Download-Test
+  if(recv_bwtest != 0)
+	return 1;
+
+  // Upload-Test
+  if(send_bwtest != 0)
+	return 1;
+
+  return 0;
+}
+
+int recv_bwtest(int server)
 {
   char buffer[BUFFER_SIZE];
   char request[] = "request";
   int bytes, x, recv_bytes;
   time_t start;
 
-  start = time(NULL); 
+  start = time(NULL);
   recv_bytes = 0;
 
   while (time(NULL)-start <= 5)
@@ -31,17 +55,23 @@ int server_behandlung (int server)
     if (send(server, request, strlen(request), 0) == -1)
     {
         perror("send() failed");
-        return -1;
+        return 1;
     }
     bytes = recv(server, buffer, sizeof(buffer), 0);
      if (bytes == -1)
-       return -2;
+       return 1;
     buffer[bytes] = '\0';
 
     recv_bytes += bytes;
   }
 
-  printf("Bandbreite: %d\n", (recv_bytes/5)*8); 
+  printf("Bandbreite: %d\n", (recv_bytes/5)*8);
+  return 0;
+
+}
+
+int send_bwtest (int server)
+{
   return 0;
 }
 
@@ -72,7 +102,7 @@ int main (int argc, char *argv[])
   }
 
   // ToDo
-  server_behandlung(s);
+  bwtest(s);
 
   close();
 

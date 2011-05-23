@@ -46,7 +46,7 @@ int send_bwtest (int client)
   int bytes, x;
 
   // Create Buffer
-  for(x = 0; x < (BUFFER_SIZE-3); x++)
+  for(x = 0; x < (BUFFER_SIZE-4); x++)
   {
     buffer[x] = 'Q';
   }

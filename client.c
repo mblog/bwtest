@@ -30,11 +30,11 @@ int send_bwtest(int server);
 int bwtest (int server)
 {
   // Download-Test
-  if(recv_bwtest != 0)
+  if(recv_bwtest(server) != 0)
 	return 1;
 
   // Upload-Test
-  if(send_bwtest != 0)
+  if(send_bwtest(server) != 0)
 	return 1;
 
   return 0;

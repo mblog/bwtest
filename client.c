@@ -30,10 +30,12 @@ int send_bwtest(int server);
 int bwtest (int server)
 {
   // Download-Test
+  printf ("Download\n");
   if(recv_bwtest(server) != 0)
 	return 1;
 
   // Upload-Test
+  printf ("Upload\n");
   if(send_bwtest(server) != 0)
 	return 1;
 
@@ -43,7 +45,7 @@ int bwtest (int server)
 int recv_bwtest(int server)
 {
   char buffer[BUFFER_SIZE];
-  char request[] = "request";
+  char request[] = "1";
   int bytes, x, recv_bytes;
   time_t start;
 
@@ -52,7 +54,7 @@ int recv_bwtest(int server)
 
   while (time(NULL)-start <= 5)
   {
-    if (send(server, request, strlen(request), 0) == -1)
+    if (send(server, request, 1, 0) == -1)
     {
         perror("send() failed");
         return 1;
@@ -64,6 +66,13 @@ int recv_bwtest(int server)
 
     recv_bytes += bytes;
   }
+
+  if (send(server, "1", 1, 0) == -1)
+    {
+        printf ("STOP");
+        perror("send() failed");
+        return 1;
+    }
 
   printf("Bandbreite: %d\n", (recv_bytes/5)*8);
   return 0;

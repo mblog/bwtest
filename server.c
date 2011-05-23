@@ -18,53 +18,39 @@
 // Todo if client connects
 int client_behandlung(int client);
 
-// Send Test
-int send_bwtest(int client);
-
-// Recv Test
-int recv_bwtest (int client);
-
 /* ------------------------------ */
 
 int client_behandlung(int client)
 {
-  // First a Download-Test (from client view)
-  if (send_bwtest(client) != 0)
-	return 1;
-
-  // Upload-Test (from client view)
-  if (recv_bwtest(client) != 0)
-	return 1;
-
-  return 0;
-}
-
-int send_bwtest (int client)
-{
   char buffer[BUFFER_SIZE];
-  char request[10];
+  char request[1];
   int bytes, x;
 
   // Create Buffer
-  for(x = 0; x < (BUFFER_SIZE-4); x++)
+  while(strlen(buffer) < BUFFER_SIZE)
+  //for(x = 0; x < (BUFFER_SIZE-5); x++)
   {
-    buffer[x] = 'Q';
+    //buffer[x] = 'Q';
+    strcat(buffer, "QSC");
   }
 
   printf("Buffer-Size: %d\n", strlen(buffer));
 
   // Send buffer if request received
-  while((bytes = recv(client, request, sizeof(request), 0)) > 0)
+  //while((bytes = recv(client, request, 1, 0)) > 0)
+  do
   {
-    send(client, buffer, strlen(buffer), 0);
-  }
+    bytes = recv(client, request, 1, 0);
+    request[bytes] = '\0';
+    printf("%s %d\n", request, bytes);
+    if(request[0] == '1')
+      send(client, buffer, strlen(buffer), 0);
+    if(request[0] == '0')
+      printf ("Ende\n");
+    request = ;
+  } while (request[0] == '1');
   if (bytes == -1)
     return 1;
-  return 0;
-}
-
-int recv_bwtest (int client)
-{
   return 0;
 }
 

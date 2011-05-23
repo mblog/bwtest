@@ -18,40 +18,48 @@
 // Todo if client connects
 int client_behandlung(int client);
 
+// Receive Request
+char receive_request (int client);
+
 /* ------------------------------ */
 
 int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
-  char request[1];
+  char request;
   int bytes, x;
 
   // Create Buffer
   while(strlen(buffer) < BUFFER_SIZE)
-  //for(x = 0; x < (BUFFER_SIZE-5); x++)
   {
-    //buffer[x] = 'Q';
-    strcat(buffer, "QSC");
+    strcat(buffer, "bw");
   }
 
   printf("Buffer-Size: %d\n", strlen(buffer));
 
-  // Send buffer if request received
-  //while((bytes = recv(client, request, 1, 0)) > 0)
+  // Send buffer if request==1
   do
   {
-    bytes = recv(client, request, 1, 0);
-    request[bytes] = '\0';
-    printf("%s %d\n", request, bytes);
-    if(request[0] == '1')
+    request = receive_request(client);
+    if(request == '1')
       send(client, buffer, strlen(buffer), 0);
-    if(request[0] == '0')
+    if(request == '0')
       printf ("Ende\n");
-    request = ;
-  } while (request[0] == '1');
-  if (bytes == -1)
-    return 1;
+  } while (request == '1');
+
+  // Receive buffer from client
+  
+
   return 0;
+}
+
+char receive_request(int client)
+{
+  char recv_message[1];
+  int bytes;
+  bytes = recv(client, recv_message, 1, 0);
+  recv_message[bytes] = '\0';
+  return recv_message[0];
 }
 
 /* ------------------------------ */

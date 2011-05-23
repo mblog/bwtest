@@ -67,9 +67,8 @@ int recv_bwtest(int server)
     recv_bytes += bytes;
   }
 
-  if (send(server, "1", 1, 0) == -1)
+  if (send(server, "0", 1, 0) == -1)
     {
-        printf ("STOP");
         perror("send() failed");
         return 1;
     }

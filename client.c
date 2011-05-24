@@ -80,6 +80,20 @@ int recv_bwtest(int server)
 
 int send_bwtest (int server)
 {
+  char buffer[BUFFER_SIZE];
+  start = time(NULL);
+
+  // Create Bufer
+  while(strlen(buffer) < BUFFER_SIZE-5)
+  {
+    strcat(buffer, "bw");
+  }
+
+  while (time(NULL)-start <= 5)
+  {
+    send(server, buffer, strlen(buffer),0);
+  }
+
   return 0;
 }
 

@@ -30,13 +30,14 @@ int client_behandlung(int client)
   int bytes, x;
 
   // Create Buffer
-  while(strlen(buffer) < BUFFER_SIZE)
+  while(strlen(buffer) < BUFFER_SIZE-5)
   {
     strcat(buffer, "bw");
   }
 
   printf("Buffer-Size: %d\n", strlen(buffer));
 
+  printf ("Start Download\n");
   // Send buffer if request==1
   do
   {
@@ -47,8 +48,13 @@ int client_behandlung(int client)
       printf ("Ende\n");
   } while (request == '1');
 
+  printf ("Start Upload\n");
   // Receive buffer from client
-  
+  while (bytes = recv(client, buffer, sizeof(buffer), 0) > 0)
+  {
+    if(bytes < 0)
+      return 1;
+  }
 
   return 0;
 }

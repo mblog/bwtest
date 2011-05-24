@@ -81,6 +81,8 @@ int recv_bwtest(int server)
 int send_bwtest (int server)
 {
   char buffer[BUFFER_SIZE];
+  time_t start;
+
   start = time(NULL);
 
   // Create Bufer

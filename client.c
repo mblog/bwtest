@@ -91,10 +91,13 @@ int send_bwtest (int server)
     strcat(buffer, "bw");
   }
 
+  char test[] = "TEST"; 
   while (time(NULL)-start <= 5)
   {
     send(server, buffer, strlen(buffer),0);
+    //send(server, test, strlen(test),0);
   }
+ printf ("%d\n", strlen(buffer));
 
   return 0;
 }

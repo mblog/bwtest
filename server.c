@@ -21,13 +21,15 @@ int client_behandlung(int client);
 // Receive Request
 char receive_request (int client);
 
+// Upload-Test (from client view)
+void recv_bwtest (int client);
+
 /* ------------------------------ */
 
 int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
   char request;
-  int bytes, x;
 
   // Create Buffer
   while(strlen(buffer) < BUFFER_SIZE-5)
@@ -50,13 +52,27 @@ int client_behandlung(int client)
 
   printf ("Start Upload\n");
   // Receive buffer from client
-  while (bytes = recv(client, buffer, sizeof(buffer), 0) > 0)
-  {
-    if(bytes < 0)
-      return 1;
-  }
+  recv_bwtest(client);
 
   return 0;
+}
+
+void recv_bwtest(int client)
+{
+ int bytes, recv_bytes;
+ char buffer[BUFFER_SIZE]; 
+
+  printf("%d\n", sizeof(buffer));
+  
+ recv_bytes = 0;
+  //while (bytes = recv(client, buffer, sizeof(buffer), 0) > 0)
+  do
+  {
+    bytes = recv(client, buffer, sizeof(buffer), 0);
+    buffer[bytes] = '\0';
+    recv_bytes += bytes;
+  } while (bytes > 0);
+ printf ("Empfangene Bytes %d\n", recv_bytes); 
 }
 
 char receive_request(int client)

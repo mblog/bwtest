@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -51,7 +52,8 @@ int client_behandlung(int client)
   } while (request == '1');
 
   printf ("Start Upload\n");
-  // Receive buffer from client
+
+  // Receive buffer from client (Upload-Test)
   recv_bwtest(client);
 
   return 0;
@@ -61,9 +63,10 @@ void recv_bwtest(int client)
 {
  int bytes, recv_bytes;
  char buffer[BUFFER_SIZE]; 
+ char str[10];
 
-  printf("%d\n", sizeof(buffer));
-  
+ printf("%d\n", sizeof(buffer));
+
  recv_bytes = 0;
   //while (bytes = recv(client, buffer, sizeof(buffer), 0) > 0)
   do
@@ -73,6 +76,13 @@ void recv_bwtest(int client)
     recv_bytes += bytes;
   } while (bytes > 0);
  printf ("Empfangene Bytes %d\n", recv_bytes); 
+ //itoa (recv_bytes, str, 10); 
+ sprintf (buffer, "%d", recv_bytes);
+ 
+ //while((bytes = recv(sock, buffer, sizeof(buffer), 0)) > 0)
+        send(client, buffer, strlen(buffer), 0);
+
+ 
 }
 
 char receive_request(int client)

@@ -82,6 +82,7 @@ int send_bwtest (int server)
 {
   char buffer[BUFFER_SIZE];
   time_t start;
+  int recv_bytes;
 
   start = time(NULL);
 
@@ -99,6 +100,9 @@ int send_bwtest (int server)
   }
  printf ("%d\n", strlen(buffer));
 
+ recv(server, buffer, 1024, 0);
+
+ printf ("Der Server hat %s empfangen\n", buffer);
   return 0;
 }
 

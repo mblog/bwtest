@@ -5,7 +5,8 @@
 */
 
 #include <stdio.h>
-
+#include <time.h>
+#include <stdlib.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -15,6 +16,15 @@
 
 void client_behandlung(int client)
 {
+    struct timeval tv;
+
+   gettimeofday(&tv, 0);
+
+    printf ("%d.%d\n", tv.tv_sec, tv.tv_usec);
+    
+  
+    
+ 
 }
 
 /* ------------------------------ */

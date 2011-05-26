@@ -16,8 +16,9 @@
 
 int main (int argc, char *argv[])
 {
-  int s;
+  int s,x;
   struct sockaddr_in addr;
+  char buffer[5000];
 
   addr.sin_addr.s_addr = inet_addr("127.0.0.1");    /* z.B. inet_addr("127.0.0.1"); */
   addr.sin_port = htons(5001);             /* z.B. htons(80);              */
@@ -38,7 +39,10 @@ int main (int argc, char *argv[])
     return 2;
   }
 
-  
+  for(x=0;x<100;x++)
+  {
+   recv(s, buffer, sizeof(buffer) - 1, 0);
+  }
 
 
   close();

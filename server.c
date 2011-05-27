@@ -13,6 +13,13 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#define BUFFER_SIZE 1492 
+
+/* global variables */
+
+int debug = 0;
+int listenport = 21000;
+
 /* ------------------------------ */
 
 void client_behandlung(int client)
@@ -20,22 +27,21 @@ void client_behandlung(int client)
   struct timeval tim;
   double t1, t2;
   int x, y, bytes;
-  char buffer[] = "ABCDEFGHIJKLMOPQRSTUVWXYZ";
-  char puffer[5000] = "";
+  char buffer[BUFFER_SIZE];
 
   //gettimeofday(&tv, 0);
-
+  buffer = "TEST";
   //printf ("%d.%d\n", tv.tv_sec, tv.tv_usec);
-  for(x=0; x<100;x++)
-  {
-    strncat(puffer, buffer,5000-strlen(buffer)+1);
-    //printf ("Puffer: %s\n", puffer);
-    gettimeofday(&tim, NULL);
-    double t1=tim.tv_sec+(tim.tv_usec/1000000.0);
-    bytes = send(client, puffer, strlen(puffer), 0);
-    gettimeofday(&tim, NULL);
-    double t2=tim.tv_sec+(tim.tv_usec/1000000.0);
-    printf ("Packetgröße: %d\tDauer: %.6lf seconds\n", bytes, t2-t1);
+  //strncat(puffer, buffer,5000-strlen(buffer)+1);
+  //printf ("Puffer: %s\n", puffer);
+  gettimeofday(&tim, NULL);
+  double t1=tim.tv_sec+(tim.tv_usec/1000000.0);
+  while((bytes = recv(client, buffer, sizeof(buffer), 0)) > 0)
+        send(client, buffer, strlen(buffer), 0);
+  // bytes = send(client, puffer, strlen(puffer), 0);
+  gettimeofday(&tim, NULL);
+  double t2=tim.tv_sec+(tim.tv_usec/1000000.0);
+  printf ("Packetgröße: %d\tDauer: %.6lf seconds\n", bytes, t2-t1);
   }
 }
 
@@ -49,7 +55,7 @@ int main (int argc, char *argv[])
 
 
   addr.sin_addr.s_addr = INADDR_ANY;	/* z.B. inet_addr("127.0.0.1"); */
-  addr.sin_port = htons(5001); 		/* z.B. htons(80);              */
+  addr.sin_port = htons(listenport); 		/* z.B. htons(80);              */
   addr.sin_family = AF_INET;
 
   // Create Socket

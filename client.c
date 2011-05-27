@@ -20,7 +20,7 @@ int main (int argc, char *argv[])
   struct sockaddr_in addr;
   char buffer[5000];
 
-  addr.sin_addr.s_addr = inet_addr("127.0.0.1");    /* z.B. inet_addr("127.0.0.1"); */
+  addr.sin_addr.s_addr = inet_addr("78.47.146.248");    /* z.B. inet_addr("127.0.0.1"); */
   addr.sin_port = htons(5001);             /* z.B. htons(80);              */
   addr.sin_family = AF_INET;
 

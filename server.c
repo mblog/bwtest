@@ -38,11 +38,6 @@ void client_behandlung(int client)
   char recv_msg[BUFFER_SIZE];
   char control_msg[10];
 
-  //for(y = 0; y<100; y++)
-  //{
-  //   send_msg[y] = 'A';
-  //}
-
   //while (1)
   for (x = 1; x <= 14; x++)
   {
@@ -50,15 +45,18 @@ void client_behandlung(int client)
     //printf ("%s", control_msg);
     //if(strstr (control_msg, "exit") != 0)
     //  break;
-    gettimeofday(&tim, NULL);
-    t1=tim.tv_sec+(tim.tv_usec/1000000.0);
-    send_bytes = send(client, send_msg, x*100, 0);
-    recv_bytes = recv(client, recv_msg, sizeof(recv_msg), 0);
-    gettimeofday(&tim, NULL);
-    t2=tim.tv_sec+(tim.tv_usec/1000000.0);
-    recv_msg[recv_bytes] = '\0';
-    printf ("S-Size: %d\tR-Size: %d\tDauer: %.6lf seconds\n", send_bytes, recv_bytes, t2-t1);
-    //printf ("Send: %s\tReceive: %s\n", send_msg, recv_msg);
+    for (y=0;y<2;y++)
+    {
+      gettimeofday(&tim, NULL);
+      t1=tim.tv_sec+(tim.tv_usec/1000000.0);
+      send_bytes = send(client, send_msg, x*100, 0);
+      recv_bytes = recv(client, recv_msg, sizeof(recv_msg), 0);
+      gettimeofday(&tim, NULL);
+      t2=tim.tv_sec+(tim.tv_usec/1000000.0);
+      recv_msg[recv_bytes] = '\0';
+      printf ("S-Size: %d\tR-Size: %d\tDauer: %.6lf seconds\n", send_bytes, recv_bytes, t2-t1);
+      //printf ("Send: %s\tReceive: %s\n", send_msg, recv_msg);
+    }
   }
 }
 

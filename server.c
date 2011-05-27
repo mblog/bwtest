@@ -25,6 +25,8 @@ int listenport = 21000;
 
 void client_behandlung(int client);
 
+void send_ping (int client);
+
 /* ------------------------------ */
 
 void client_behandlung(int client)
@@ -32,25 +34,37 @@ void client_behandlung(int client)
   struct timeval tim;
   double t1, t2;
   int x, y, recv_bytes, send_bytes;
-  char send_msg[] ="TEST\0";
+  char send_msg[BUFFER_SIZE];
   char recv_msg[BUFFER_SIZE];
   char control_msg[10];
 
-  while (1)
+  //for(y = 0; y<100; y++)
+  //{
+  //   send_msg[y] = 'A';
+  //}
+
+  //while (1)
+  for (x = 1; x <= 14; x++)
   {
-    recv(client, control_msg, sizeof(control_msg), 0);
+    //recv(client, control_msg, sizeof(control_msg), 0);
     //printf ("%s", control_msg);
-    if(strstr (control_msg, "exit") != 0)
-      return;
+    //if(strstr (control_msg, "exit") != 0)
+    //  break;
     gettimeofday(&tim, NULL);
     t1=tim.tv_sec+(tim.tv_usec/1000000.0);
-    send_bytes = send(client, send_msg, strlen(send_msg), 0);
+    send_bytes = send(client, send_msg, x*100, 0);
     recv_bytes = recv(client, recv_msg, sizeof(recv_msg), 0);
     gettimeofday(&tim, NULL);
     t2=tim.tv_sec+(tim.tv_usec/1000000.0);
+    recv_msg[recv_bytes] = '\0';
     printf ("S-Size: %d\tR-Size: %d\tDauer: %.6lf seconds\n", send_bytes, recv_bytes, t2-t1);
-    printf ("Send: %s\tReceive: %s\n", send_msg, recv_msg);
+    //printf ("Send: %s\tReceive: %s\n", send_msg, recv_msg);
   }
+}
+
+void send_ping (int client)
+{
+  
 }
 
 /* ------------------------------ */

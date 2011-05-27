@@ -12,13 +12,18 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
-#define BUFFER_SIZE 1492 
+#define BUFFER_SIZE 1500 
 
 /* global variables */
 
 int debug = 0;
 int listenport = 21000;
+
+/* --------- prototypes --------- */
+
+void client_behandlung(int client);
 
 /* ------------------------------ */
 
@@ -26,22 +31,25 @@ void client_behandlung(int client)
 {
   struct timeval tim;
   double t1, t2;
-  int x, y, bytes;
-  char buffer[BUFFER_SIZE];
+  int x, y, recv_bytes, send_bytes;
+  char send_msg[] ="TEST\0";
+  char recv_msg[BUFFER_SIZE];
+  char control_msg[10];
 
-  //gettimeofday(&tv, 0);
-  buffer = "TEST";
-  //printf ("%d.%d\n", tv.tv_sec, tv.tv_usec);
-  //strncat(puffer, buffer,5000-strlen(buffer)+1);
-  //printf ("Puffer: %s\n", puffer);
-  gettimeofday(&tim, NULL);
-  double t1=tim.tv_sec+(tim.tv_usec/1000000.0);
-  while((bytes = recv(client, buffer, sizeof(buffer), 0)) > 0)
-        send(client, buffer, strlen(buffer), 0);
-  // bytes = send(client, puffer, strlen(puffer), 0);
-  gettimeofday(&tim, NULL);
-  double t2=tim.tv_sec+(tim.tv_usec/1000000.0);
-  printf ("Packetgröße: %d\tDauer: %.6lf seconds\n", bytes, t2-t1);
+  while (1)
+  {
+    recv(client, control_msg, sizeof(control_msg), 0);
+    //printf ("%s", control_msg);
+    if(strstr (control_msg, "exit") != 0)
+      return;
+    gettimeofday(&tim, NULL);
+    t1=tim.tv_sec+(tim.tv_usec/1000000.0);
+    send_bytes = send(client, send_msg, strlen(send_msg), 0);
+    recv_bytes = recv(client, recv_msg, sizeof(recv_msg), 0);
+    gettimeofday(&tim, NULL);
+    t2=tim.tv_sec+(tim.tv_usec/1000000.0);
+    printf ("S-Size: %d\tR-Size: %d\tDauer: %.6lf seconds\n", send_bytes, recv_bytes, t2-t1);
+    printf ("Send: %s\tReceive: %s\n", send_msg, recv_msg);
   }
 }
 

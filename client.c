@@ -5,23 +5,46 @@
 */
 
 #include <stdio.h>
+#include <string.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#define BUFFER_SIZE 1500
+
+/* global variables */
+
+int debug = 0;
+int serverport = 21000;
+
 
 /* ------------------------------ */
 
+void ping_back (int server)
+{
+  char recv_msg[BUFFER_SIZE];
+  int x, bytes;
+  char stop_msg[] = "exit\0";
+  char control_msg[] ="start\0";
+
+  for (x=1; x<=14; x++)
+  {
+   //send(server, control_msg, strlen(control_msg), 0);
+   bytes = recv(server, recv_msg, sizeof(recv_msg), 0);
+   recv_msg[bytes] = '\0';
+   send(server, recv_msg, x*100, 0);
+  }
+  //send(server, stop_msg, strlen(stop_msg), 0);
+}
 
 int main (int argc, char *argv[])
 {
-  int s,x;
+  int s;
   struct sockaddr_in addr;
-  char buffer[5000];
 
   addr.sin_addr.s_addr = inet_addr("78.47.146.248");    /* z.B. inet_addr("127.0.0.1"); */
-  addr.sin_port = htons(5001);             /* z.B. htons(80);              */
+  addr.sin_port = htons(serverport);             /* z.B. htons(80);              */
   addr.sin_family = AF_INET;
 
   // Create Socket
@@ -39,10 +62,7 @@ int main (int argc, char *argv[])
     return 2;
   }
 
-  for(x=0;x<100;x++)
-  {
-   recv(s, buffer, sizeof(buffer) - 1, 0);
-  }
+  ping_back(s);
 
 
   close();

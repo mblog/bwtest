@@ -24,18 +24,21 @@ int serverport = 21000;
 void ping_back (int server)
 {
   char recv_msg[BUFFER_SIZE];
-  int x, bytes;
+  int x, y, bytes;
   char stop_msg[] = "exit\0";
   char control_msg[] ="start\0";
 
   for (x=1; x<=14; x++)
   {
-   //send(server, control_msg, strlen(control_msg), 0);
-   bytes = recv(server, recv_msg, sizeof(recv_msg), 0);
-   recv_msg[bytes] = '\0';
-   send(server, recv_msg, x*100, 0);
-  }
+    for (y = 0; y < 2; y++)
+    {
+      //send(server, control_msg, strlen(control_msg), 0);
+      bytes = recv(server, recv_msg, sizeof(recv_msg), 0);
+      recv_msg[bytes] = '\0';
+      send(server, recv_msg, x*100, 0);
+    }
   //send(server, stop_msg, strlen(stop_msg), 0);
+  }
 }
 
 int main (int argc, char *argv[])

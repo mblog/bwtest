@@ -28,9 +28,9 @@ void ping_back (int server)
   char stop_msg[] = "exit\0";
   char control_msg[] ="start\0";
 
-  for (x=1; x<=24; x++)
+  for (x=1; x<=14; x++)
   {
-    for (y = 0; y < 2; y++)
+    for (y = 0; y < 4; y++)
     {
       //send(server, control_msg, strlen(control_msg), 0);
       bytes = recv(server, recv_msg, sizeof(recv_msg), 0);

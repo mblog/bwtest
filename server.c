@@ -39,13 +39,13 @@ void client_behandlung(int client)
   char control_msg[10];
 
   //while (1)
-  for (x = 1; x <= 24; x++)
+  for (x = 1; x <= 14; x++)
   {
     //recv(client, control_msg, sizeof(control_msg), 0);
     //printf ("%s", control_msg);
     //if(strstr (control_msg, "exit") != 0)
     //  break;
-    for (y=0;y<2;y++)
+    for (y=0;y<4;y++)
     {
       gettimeofday(&tim, NULL);
       t1=tim.tv_sec+(tim.tv_usec/1000000.0);

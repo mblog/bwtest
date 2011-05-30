@@ -32,7 +32,7 @@ void send_ping (int client);
 void client_behandlung(int client)
 {
   struct timeval tim;
-  double t1, t2;
+  double t1, t2, timesum;
   int x, y, recv_bytes, send_bytes;
   char send_msg[BUFFER_SIZE];
   char recv_msg[BUFFER_SIZE];
@@ -41,11 +41,12 @@ void client_behandlung(int client)
   //while (1)
   for (x = 1; x <= 14; x++)
   {
+    timesum = 0;
     //recv(client, control_msg, sizeof(control_msg), 0);
     //printf ("%s", control_msg);
     //if(strstr (control_msg, "exit") != 0)
     //  break;
-    for (y=0;y<4;y++)
+    for (y=0;y<10;y++)
     {
       gettimeofday(&tim, NULL);
       t1=tim.tv_sec+(tim.tv_usec/1000000.0);
@@ -54,11 +55,13 @@ void client_behandlung(int client)
       gettimeofday(&tim, NULL);
       t2=tim.tv_sec+(tim.tv_usec/1000000.0);
       recv_msg[recv_bytes] = '\0';
-      printf ("S-Size: %d\tR-Size: %d\tDauer: %.6lf seconds\n", send_bytes, recv_bytes, t2-t1);
+      //printf ("S-Size: %d\tR-Size: %d\tDauer: %.6lf seconds\n", send_bytes, recv_bytes, t2-t1);
       if (recv_bytes < 0)
          return;
+      timesum += t2-t1;
       //printf ("Send: %s\tReceive: %s\n", send_msg, recv_msg);
     }
+    printf("Paketgröße: %d \t-\tDauer: %.6lf seconds\n", x*100, timesum/10);
   }
 }
 

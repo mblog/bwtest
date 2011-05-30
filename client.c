@@ -52,7 +52,7 @@ int main (int argc, char *argv[])
   addr.sin_family = AF_INET;
 
   // Create Socket
-  s = socket(AF_INET, SOCK_STREAM, 0);
+  s = socket(AF_INET, SOCK_DGRAM, 0);
   if (s == -1)
   {
     perror("socket() failed");

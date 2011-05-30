@@ -28,15 +28,16 @@ void ping_back (int server)
   char stop_msg[] = "exit\0";
   char control_msg[] ="start\0";
 
-  for (x=1; x<=14; x++)
+  //for (x=1; x<=14; x++)
+  while((bytes = recv(server, recv_msg, sizeof(recv_msg), 0)) > 0)
   {
-    for (y = 0; y < 4; y++)
-    {
+    //for (y = 0; y < 4; y++)
+    //{
       //send(server, control_msg, strlen(control_msg), 0);
-      bytes = recv(server, recv_msg, sizeof(recv_msg), 0);
+      //bytes = recv(server, recv_msg, sizeof(recv_msg), 0);
       recv_msg[bytes] = '\0';
-      send(server, recv_msg, x*100, 0);
-    }
+      send(server, recv_msg, bytes, 0);
+    //}
   //send(server, stop_msg, strlen(stop_msg), 0);
   }
 }

@@ -55,6 +55,8 @@ void client_behandlung(int client)
       t2=tim.tv_sec+(tim.tv_usec/1000000.0);
       recv_msg[recv_bytes] = '\0';
       printf ("S-Size: %d\tR-Size: %d\tDauer: %.6lf seconds\n", send_bytes, recv_bytes, t2-t1);
+      if (recv_bytes < 0)
+         return;
       //printf ("Send: %s\tReceive: %s\n", send_msg, recv_msg);
     }
   }

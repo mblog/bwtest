@@ -7,6 +7,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -36,8 +38,8 @@ int bwtest (int server)
 
   // Upload-Test
   printf ("Upload\n");
-  if(send_bwtest(server) != 0)
-	return 1;
+  //if(send_bwtest(server) != 0)
+  //	return 1;
 
   return 0;
 }
@@ -45,26 +47,42 @@ int bwtest (int server)
 int recv_bwtest(int server)
 {
   char buffer[BUFFER_SIZE];
-  char request[] = "1";
   int bytes, recv_bytes;
   time_t start;
+  fd_set rfds;
+  struct timeval tv;
+  int retval;
+
+  fcntl(server, F_SETFL, O_NONBLOCK);
+  
+  /* Wait up to five seconds. */
+  tv.tv_sec = 5;
+  tv.tv_usec = 0;
 
   start = time(NULL);
   recv_bytes = 0;
 
+  //retval = select(1, &rfds, NULL, NULL, &tv); /* Don't rely on the value of tv now! */
+
+  //if (retval)
+  //  printf("Data is available now.\n"); /* FD_ISSET(0, &rfds) will be true. */
+  //else
+  //  printf("No data within five seconds.\n"); 
+
+
   while(1)
   //while (time(NULL)-start <= 5)
   {
+    FD_SET(server, &rfds);
+
+    select(server+1, &rfds, NULL, NULL, &tv);
+    
     /* if (send(server, request, 1, 0) == -1)
     {
         perror("send() failed");
         return 1;
     } */
     bytes = recv(server, buffer, sizeof(buffer), 0);
-     if (bytes == -1)
-       return 1;
-    buffer[bytes] = '\0';
-
     recv_bytes += bytes;
   }
 
@@ -136,7 +154,7 @@ int main (int argc, char *argv[])
   // ToDo
   bwtest(s);
 
-  close();
+  close(s);
 
   return 0;
 }

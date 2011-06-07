@@ -32,26 +32,24 @@ int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
   char request;
+  int x;
 
   printf ("Start Download\n");
-  // Send buffer if request==1
-  do
+
+  for (x = 0; x< 1000;x++)
   {
-    request = receive_request(client);
-    if(request == '1')
-      send(client, buffer, strlen(buffer), 0);
-    if(request == '0')
-      printf ("Ende\n");
-  } while (request == '1');
+     send(client, buffer, strlen(buffer), 0);
+  }
 
   printf ("Start Upload\n");
 
   // Receive buffer from client (Upload-Test)
-  recv_bwtest(client);
+  //recv_bwtest(client);
 
   return 0;
 }
 
+/*
 void recv_bwtest(int client)
 {
  int bytes, recv_bytes;
@@ -77,6 +75,7 @@ void recv_bwtest(int client)
 
  
 }
+*/
 
 char receive_request(int client)
 {

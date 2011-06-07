@@ -75,8 +75,8 @@ int recv_bwtest(int server)
   {
     FD_SET(server, &rfds);
 
-    select(server+1, &rfds, NULL, NULL, &tv);
-    
+    select(server, &rfds, NULL, NULL, &tv);
+    printf ("NEXT\n");
     /* if (send(server, request, 1, 0) == -1)
     {
         perror("send() failed");

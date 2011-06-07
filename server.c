@@ -20,9 +20,6 @@
 // Todo if client connects
 int client_behandlung(int client);
 
-// Receive Request
-char receive_request (int client);
-
 // Upload-Test (from client view)
 void recv_bwtest (int client);
 
@@ -31,17 +28,22 @@ void recv_bwtest (int client);
 int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
-  char request;
-  int x;
-  fd_set rfds;
+  int x, bytes;
 
   printf ("Start Download\n");
 
-  for (x = 0; x< 10;x++)
+  buffer[0] = 'T';
+
+  for (x = 0; x<10;x++)
   {
-     FD_SET(client, &rfds);
-     select(client+1, &rfds, NULL, NULL, NULL);
-     send(client, buffer, strlen(buffer), 0);
+     bytes = send(client, buffer, BUFFER_SIZE, 0);
+     if (bytes == -1)
+	{
+		perror("fehlgeschlagen\n");
+		return -1;
+	}
+
+
   }
 
   printf ("Start Upload\n");
@@ -79,15 +81,6 @@ void recv_bwtest(int client)
  
 }
 */
-
-char receive_request(int client)
-{
-  char recv_message[1];
-  int bytes;
-  bytes = recv(client, recv_message, 1, 0);
-  recv_message[bytes] = '\0';
-  return recv_message[0];
-}
 
 /* ------------------------------ */
 int main (int argc, char *argv[])

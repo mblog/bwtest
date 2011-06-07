@@ -11,6 +11,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 #define BUFFER_SIZE 1024
 
@@ -31,8 +32,6 @@ int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
   char request;
-
-  printf("Buffer-Size: %d\n", strlen(buffer));
 
   printf ("Start Download\n");
   // Send buffer if request==1
@@ -59,7 +58,7 @@ void recv_bwtest(int client)
  char buffer[BUFFER_SIZE]; 
  char str[10];
 
- printf("%d\n", sizeof(buffer));
+ printf("%ld\n", sizeof(buffer));
 
  recv_bytes = 0;
   //while (bytes = recv(client, buffer, sizeof(buffer), 0) > 0)

@@ -32,12 +32,6 @@ int client_behandlung(int client)
   char buffer[BUFFER_SIZE];
   char request;
 
-  // Create Buffer
-  while(strlen(buffer) < BUFFER_SIZE-5)
-  {
-    strcat(buffer, "bw");
-  }
-
   printf("Buffer-Size: %d\n", strlen(buffer));
 
   printf ("Start Download\n");

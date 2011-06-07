@@ -36,7 +36,7 @@ int client_behandlung(int client)
 
   printf ("Start Download\n");
 
-  for (x = 0; x< 1000;x++)
+  for (x = 0; x< 10000;x++)
   {
      send(client, buffer, strlen(buffer), 0);
   }

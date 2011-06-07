@@ -46,19 +46,20 @@ int recv_bwtest(int server)
 {
   char buffer[BUFFER_SIZE];
   char request[] = "1";
-  int bytes, x, recv_bytes;
+  int bytes, recv_bytes;
   time_t start;
 
   start = time(NULL);
   recv_bytes = 0;
 
-  while (time(NULL)-start <= 5)
+  while(1)
+  //while (time(NULL)-start <= 5)
   {
-    if (send(server, request, 1, 0) == -1)
+    /* if (send(server, request, 1, 0) == -1)
     {
         perror("send() failed");
         return 1;
-    }
+    } */
     bytes = recv(server, buffer, sizeof(buffer), 0);
      if (bytes == -1)
        return 1;
@@ -67,13 +68,13 @@ int recv_bwtest(int server)
     recv_bytes += bytes;
   }
 
-  if (send(server, "0", 1, 0) == -1)
+  /*if (send(server, "0", 1, 0) == -1)
     {
         perror("send() failed");
         return 1;
-    }
+    } */
 
-  printf("Bandbreite: %d\n", (recv_bytes/5)*8);
+  printf("Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
   return 0;
 
 }

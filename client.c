@@ -54,7 +54,7 @@ int recv_bwtest(int server)
   int retval;
 
   fcntl(server, F_SETFL, O_NONBLOCK);
-  
+
   /* Wait up to five seconds. */
   tv.tv_sec = 5;
   tv.tv_usec = 0;
@@ -62,37 +62,29 @@ int recv_bwtest(int server)
   start = time(NULL);
   recv_bytes = 0;
 
-  //retval = select(1, &rfds, NULL, NULL, &tv); /* Don't rely on the value of tv now! */
+while(1)
+{
+  FD_ZERO(&rfds);
+  FD_SET(server, &rfds);
+  FD_SET(0, &rfds);
 
-  //if (retval)
-  //  printf("Data is available now.\n"); /* FD_ISSET(0, &rfds) will be true. */
-  //else
-  //  printf("No data within five seconds.\n"); 
+  select(server+1, &rfds, NULL, NULL, &tv); /* Don't rely on the value of tv now! */
+  bytes = recv(server, buffer, sizeof(buffer), 0);
 
-
-  while(1)
-  //while (time(NULL)-start <= 5)
+  if (bytes > 0)
   {
-    FD_SET(server, &rfds);
-
-    select(server, &rfds, NULL, NULL, &tv);
-    printf ("NEXT\n");
-    /* if (send(server, request, 1, 0) == -1)
-    {
-        perror("send() failed");
-        return 1;
-    } */
-    bytes = recv(server, buffer, sizeof(buffer), 0);
+    printf("Data is available now.\n"); /* FD_ISSET(0, &rfds) will be true. */
+    //bytes = recv(server, buffer, sizeof(buffer), 0);
     recv_bytes += bytes;
   }
-
-  /*if (send(server, "0", 1, 0) == -1)
-    {
-        perror("send() failed");
-        return 1;
-    } */
-
-  printf("Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
+  else
+  {
+    printf("No data within five seconds.\n"); 
+    return 0;
+  }
+  retval = 0;
+}
+  //printf("Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
   return 0;
 
 }

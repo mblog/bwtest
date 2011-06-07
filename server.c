@@ -20,9 +20,6 @@
 // Todo if client connects
 int client_behandlung(int client);
 
-// Upload-Test (from client view)
-void recv_bwtest (int client);
-
 /* ------------------------------ */
 
 int client_behandlung(int client)
@@ -32,8 +29,6 @@ int client_behandlung(int client)
 
   printf ("Start Download\n");
 
-  buffer[0] = 'T';
-
   for (x = 0; x<10;x++)
   {
      bytes = send(client, buffer, BUFFER_SIZE, 0);
@@ -42,47 +37,15 @@ int client_behandlung(int client)
 		perror("fehlgeschlagen\n");
 		return -1;
 	}
-
-
   }
 
   printf ("Start Upload\n");
 
-  // Receive buffer from client (Upload-Test)
-  //recv_bwtest(client);
-
   return 0;
 }
 
-/*
-void recv_bwtest(int client)
-{
- int bytes, recv_bytes;
- char buffer[BUFFER_SIZE]; 
- char str[10];
-
- printf("%ld\n", sizeof(buffer));
-
- recv_bytes = 0;
-  //while (bytes = recv(client, buffer, sizeof(buffer), 0) > 0)
-  do
-  {
-    bytes = recv(client, buffer, sizeof(buffer), 0);
-    buffer[bytes] = '\0';
-    recv_bytes += bytes;
-  } while (bytes > 0);
- printf ("Empfangene Bytes %d\n", recv_bytes); 
- //itoa (recv_bytes, str, 10); 
- sprintf (buffer, "%d", recv_bytes);
- 
- //while((bytes = recv(sock, buffer, sizeof(buffer), 0)) > 0)
-        send(client, buffer, strlen(buffer), 0);
-
- 
-}
-*/
-
 /* ------------------------------ */
+
 int main (int argc, char *argv[])
 {
   int s, c;

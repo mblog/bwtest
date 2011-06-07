@@ -62,31 +62,28 @@ int recv_bwtest(int server)
   start = time(NULL);
   recv_bytes = 0;
 
-while(1)
-{
-  FD_ZERO(&rfds);
-  FD_SET(server, &rfds);
-  FD_SET(0, &rfds);
-
-  select(server+1, &rfds, NULL, NULL, &tv); /* Don't rely on the value of tv now! */
-  bytes = recv(server, buffer, sizeof(buffer), 0);
-
-  if (bytes > 0)
+  while(1)
   {
-    printf("Data is available now.\n"); /* FD_ISSET(0, &rfds) will be true. */
-    //bytes = recv(server, buffer, sizeof(buffer), 0);
-    recv_bytes += bytes;
+    FD_ZERO(&rfds);
+    FD_SET(server, &rfds);
+    FD_SET(0, &rfds);
+
+    select(server+1, &rfds, NULL, NULL, &tv); /* Don't rely on the value of tv now! */
+    bytes = recv(server, buffer, sizeof(buffer), 0);
+
+    if (bytes > 0)
+    {
+      printf("Data is available now.\n"); /* FD_ISSET(0, &rfds) will be true. */
+      recv_bytes += bytes;
+    }
+    else
+    {
+      printf("No data within five seconds.\n"); 
+      return 0;
+    }
   }
-  else
-  {
-    printf("No data within five seconds.\n"); 
-    return 0;
-  }
-  retval = 0;
-}
   //printf("Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
   return 0;
-
 }
 
 int send_bwtest (int server)

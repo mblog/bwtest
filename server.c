@@ -33,11 +33,14 @@ int client_behandlung(int client)
   char buffer[BUFFER_SIZE];
   char request;
   int x;
+  fd_set rfds;
 
   printf ("Start Download\n");
 
-  for (x = 0; x< 10000;x++)
+  for (x = 0; x< 10;x++)
   {
+     FD_SET(client, &rfds);
+     select(client+1, &rfds, NULL, NULL, NULL);
      send(client, buffer, strlen(buffer), 0);
   }
 

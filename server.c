@@ -7,12 +7,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#define TEST_TIME 5
 #define BUFFER_SIZE 1024
 
 /* --------- prototypes --------- */
@@ -25,21 +27,22 @@ int client_behandlung(int client);
 int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
-  int x, bytes;
+  time_t start;
 
-  printf ("Start Download\n");
+  printf ("Send to Client\n");
 
-  for (x = 0; x<10;x++)
+  start = time(NULL);
+
+  while ((time(NULL)-start) < TEST_TIME)
   {
-     bytes = send(client, buffer, BUFFER_SIZE, 0);
-     if (bytes == -1)
-	{
-		perror("fehlgeschlagen\n");
-		return -1;
-	}
+     if (send(client, buffer, BUFFER_SIZE, 0) < 0)
+     {
+	perror("fehlgeschlagen\n");
+	return -1;
+     }
   }
 
-  printf ("Start Upload\n");
+  printf ("Receive from client\n");
 
   return 0;
 }

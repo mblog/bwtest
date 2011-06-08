@@ -14,6 +14,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 
+#define TEST_TIME 5
 #define BUFFER_SIZE 1024
 
 /* --------- prototypes --------- */
@@ -41,6 +42,8 @@ int bwtest (int server)
   //if(send_bwtest(server) != 0)
   //	return 1;
 
+  // Get Upload-Bandwidth from server
+
   return 0;
 }
 
@@ -66,7 +69,6 @@ int recv_bwtest(int server)
   {
     FD_ZERO(&rfds);
     FD_SET(server, &rfds);
-    FD_SET(0, &rfds);
 
     select(server+1, &rfds, NULL, NULL, &tv); /* Don't rely on the value of tv now! */
     bytes = recv(server, buffer, sizeof(buffer), 0);
@@ -78,7 +80,8 @@ int recv_bwtest(int server)
     }
     else
     {
-      printf("No data within five seconds.\n"); 
+      printf("No data within five seconds.\n");
+      printf("Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
       return 0;
     }
   }
@@ -94,23 +97,11 @@ int send_bwtest (int server)
 
   start = time(NULL);
 
-  // Create Bufer
-  while(strlen(buffer) < BUFFER_SIZE-5)
-  {
-    strcat(buffer, "bw");
-  }
-
-  char test[] = "TEST";
   while (time(NULL)-start <= 5)
   {
     send(server, buffer, strlen(buffer),0);
-    //send(server, test, strlen(test),0);
   }
- printf ("%d\n", strlen(buffer));
 
- recv(server, buffer, 1024, 0);
-
- printf ("Der Server hat %s empfangen\n", buffer);
   return 0;
 }
 

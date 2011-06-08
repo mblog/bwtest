@@ -39,8 +39,8 @@ int bwtest (int server)
 
   // Upload-Test
   printf ("Upload\n");
-  //if(send_bwtest(server) != 0)
-  //	return 1;
+  if(send_bwtest(server) != 0)
+  	return 1;
 
   // Get Upload-Bandwidth from server
 
@@ -54,7 +54,6 @@ int recv_bwtest(int server)
   time_t start;
   fd_set rfds;
   struct timeval tv;
-  int retval;
 
   fcntl(server, F_SETFL, O_NONBLOCK);
 
@@ -93,13 +92,16 @@ int send_bwtest (int server)
 {
   char buffer[BUFFER_SIZE];
   time_t start;
-  int recv_bytes;
-
+ 
   start = time(NULL);
 
-  while (time(NULL)-start <= 5)
+  while (time(NULL)-start < TEST_TIME)
   {
-    send(server, buffer, strlen(buffer),0);
+    if (send(server, buffer, BUFFER_SIZE,0) < 0)
+    {
+      printf ("Senden fehlgeschlagen");
+      return 1;
+    }
   }
 
   return 0;

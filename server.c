@@ -32,6 +32,8 @@ int client_behandlung(int client)
   fd_set rfds;
   int bytes, recv_bytes;
   struct timeval tv;
+  int retval;
+
 
   printf ("Send to Client\n");
 
@@ -54,6 +56,7 @@ int client_behandlung(int client)
   tv.tv_sec = 5;
   tv.tv_usec = 0;
 
+  recv_bytes = 0;
   start = time(NULL);
 
   while(1)
@@ -61,22 +64,27 @@ int client_behandlung(int client)
     FD_ZERO(&rfds);
     FD_SET(client, &rfds);
 
-    select(client+1, &rfds, NULL, NULL, &tv);
+    select(client+1, &rfds, NULL, NULL, NULL);
     bytes = recv(client, buffer, sizeof(buffer), 0);
 
+    //if (retval)
     if (bytes > 0)
     {
-      printf("Data is available now.\n");
+      //printf("Data is available now.\n");
+      //bytes = recv(client, buffer, sizeof(buffer), 0);
       recv_bytes += bytes;
     }
     else
     {
-      printf("No data within five seconds.\n");
+      printf("No data\n");
+      //printf("Bytes %d\n", recv_bytes);
       printf("Bandbreite: %d\n", (int)(recv_bytes/(time(NULL)-start))*8);
       return 0;
     }
   }
-
+  
+  //printf("Bandbreite: %d\n", (int)(recv_bytes/(time(NULL)-start))*8);
+  
   return 0;
 }
 

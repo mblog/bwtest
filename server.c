@@ -30,7 +30,7 @@ int client_behandlung(int client)
   char buffer[BUFFER_SIZE];
   time_t start;
   fd_set rfds;
-  int bytes, recv_bytes;
+  int bytes, recv_bytes, bandwidth;
   struct timeval tv;
   int retval;
 
@@ -78,13 +78,19 @@ int client_behandlung(int client)
     {
       printf("No data\n");
       //printf("Bytes %d\n", recv_bytes);
-      printf("Bandbreite: %d\n", (int)(recv_bytes/(time(NULL)-start))*8);
+      bandwidth = (recv_bytes/(time(NULL)-start))*8;
+      printf("Bandbreite: %d\n", bandwidth);
       return 0;
     }
   }
-  
+
   //printf("Bandbreite: %d\n", (int)(recv_bytes/(time(NULL)-start))*8);
-  
+
+  printf ("Sende Bandbreite an Client\n");
+
+  itoa(bandwidth ,buffer, 10);
+  send(client, buffer, BUFFER_SIZE, 0); 
+
   return 0;
 }
 

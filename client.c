@@ -74,7 +74,7 @@ int recv_bwtest(int server)
 
     if (bytes > 0)
     {
-      printf("Data is available now.\n"); /* FD_ISSET(0, &rfds) will be true. */
+      //printf("Data is available now.\n"); /* FD_ISSET(0, &rfds) will be true. */
       recv_bytes += bytes;
     }
     else
@@ -92,16 +92,18 @@ int send_bwtest (int server)
 {
   char buffer[BUFFER_SIZE];
   time_t start;
- 
+
   start = time(NULL);
 
   while (time(NULL)-start < TEST_TIME)
   {
-    if (send(server, buffer, BUFFER_SIZE,0) < 0)
-    {
-      printf ("Senden fehlgeschlagen");
-      return 1;
-    }
+    send(server,buffer, BUFFER_SIZE, 0);
+    //printf ("Senden\n");
+    //if (send(server, buffer, BUFFER_SIZE,0) == -1)
+    //{
+    //  printf ("Senden fehlgeschlagen\n");
+      //return 1;
+    //}
   }
 
   return 0;

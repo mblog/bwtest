@@ -9,6 +9,7 @@
 #include <time.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdlib.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -27,7 +28,7 @@ int client_behandlung(int client);
 
 int client_behandlung(int client)
 {
-  char buffer[BUFFER_SIZE];
+  char buffer[BUFFER_SIZE], bbandwidth[20];
   time_t start;
   fd_set rfds;
   int bytes, recv_bytes, bandwidth;
@@ -64,14 +65,15 @@ int client_behandlung(int client)
     FD_ZERO(&rfds);
     FD_SET(client, &rfds);
 
-    select(client+1, &rfds, NULL, NULL, NULL);
-    bytes = recv(client, buffer, sizeof(buffer), 0);
+    select(client+1, &rfds, NULL, NULL, &tv);
+    
+    // bytes = recv(client, buffer, sizeof(buffer), 0);
 
-    //if (retval)
-    if (bytes > 0)
+    if (FD_ISSET(client, &rfds))
+    //if (bytes > 0)
     {
       //printf("Data is available now.\n");
-      //bytes = recv(client, buffer, sizeof(buffer), 0);
+      bytes = recv(client, buffer, sizeof(buffer), 0);
       recv_bytes += bytes;
     }
     else
@@ -80,7 +82,8 @@ int client_behandlung(int client)
       //printf("Bytes %d\n", recv_bytes);
       bandwidth = (recv_bytes/(time(NULL)-start))*8;
       printf("Bandbreite: %d\n", bandwidth);
-      return 0;
+      //return 0;
+      break;
     }
   }
 
@@ -88,8 +91,9 @@ int client_behandlung(int client)
 
   printf ("Sende Bandbreite an Client\n");
 
-  itoa(bandwidth ,buffer, 10);
-  send(client, buffer, BUFFER_SIZE, 0); 
+  //itoa(bandwidth ,bbandwidth, 10);
+  sprintf(bbandwidth, "%d", bandwidth);
+  send(client, bbandwidth, strlen(bbandwidth), 0); 
 
   return 0;
 }

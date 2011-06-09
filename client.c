@@ -33,6 +33,8 @@ int send_bwtest(int server);
 int bwtest (int server)
 {
   char buffer[BUFFER_SIZE];
+  fd_set rfds;
+  int bytes;
 
   // Download-Test
   printf ("Download\n");
@@ -45,8 +47,14 @@ int bwtest (int server)
   	return 1;
 
   // Get Upload-Bandwidth from server
-  recv(server, buffer, sizeof(buffer), 0);
-  printf ("Upload Bandbreite: &s", buffer);
+  printf ("Messung fertig\n");
+  fcntl(server, F_SETFL, O_NONBLOCK);
+  FD_SET(server, &rfds);
+  select(server+1, &rfds, NULL, NULL, NULL);
+  if (FD_ISSET(server, &rfds))
+    bytes = recv(server, buffer, sizeof(buffer), 0);
+  //buffer[bytes] = '\0';
+  printf ("Upload Bandbreite: %s\n", buffer);
   return 0;
 }
 
@@ -100,13 +108,13 @@ int send_bwtest (int server)
 
   while (time(NULL)-start < TEST_TIME)
   {
-    send(server,buffer, BUFFER_SIZE, 0);
+    //send(server,buffer, BUFFER_SIZE, 0);
     //printf ("Senden\n");
-    //if (send(server, buffer, BUFFER_SIZE,0) == -1)
-    //{
-    //  printf ("Senden fehlgeschlagen\n");
-      //return 1;
-    //}
+    if (send(server, buffer, BUFFER_SIZE, MSG_NOSIGNAL) == -1)
+    {
+      printf ("Senden fehlgeschlagen\n");
+      return 0;
+    }
   }
 
   return 0;

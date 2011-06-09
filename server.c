@@ -6,8 +6,9 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -28,6 +29,11 @@ int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
   time_t start;
+  fd_set rfds;
+  int bytes, recv_bytes;
+  struct timeval tv;
+  int retval;
+
 
   printf ("Send to Client\n");
 
@@ -44,6 +50,41 @@ int client_behandlung(int client)
 
   printf ("Receive from client\n");
 
+  fcntl(client, F_SETFL, O_NONBLOCK);
+
+  /* Wait up to five seconds. */
+  tv.tv_sec = 5;
+  tv.tv_usec = 0;
+
+  recv_bytes = 0;
+  start = time(NULL);
+
+  while(1)
+  {
+    FD_ZERO(&rfds);
+    FD_SET(client, &rfds);
+
+    select(client+1, &rfds, NULL, NULL, NULL);
+    bytes = recv(client, buffer, sizeof(buffer), 0);
+
+    //if (retval)
+    if (bytes > 0)
+    {
+      //printf("Data is available now.\n");
+      //bytes = recv(client, buffer, sizeof(buffer), 0);
+      recv_bytes += bytes;
+    }
+    else
+    {
+      printf("No data\n");
+      //printf("Bytes %d\n", recv_bytes);
+      printf("Bandbreite: %d\n", (int)(recv_bytes/(time(NULL)-start))*8);
+      return 0;
+    }
+  }
+  
+  //printf("Bandbreite: %d\n", (int)(recv_bytes/(time(NULL)-start))*8);
+  
   return 0;
 }
 
@@ -98,7 +139,7 @@ int main (int argc, char *argv[])
     close(c);
   }
 
-  close();
+  close(s);
 
   return 0;
 }

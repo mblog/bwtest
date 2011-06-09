@@ -32,6 +32,8 @@ int send_bwtest(int server);
 
 int bwtest (int server)
 {
+  char buffer[BUFFER_SIZE];
+
   // Download-Test
   printf ("Download\n");
   if(recv_bwtest(server) != 0)
@@ -43,7 +45,8 @@ int bwtest (int server)
   	return 1;
 
   // Get Upload-Bandwidth from server
-
+  recv(server, buffer, sizeof(buffer), 0);
+  printf ("Upload Bandbreite: &s", buffer);
   return 0;
 }
 

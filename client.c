@@ -33,7 +33,7 @@ int send_bwtest(int server);
 int bwtest (int server)
 {
   char buffer[BUFFER_SIZE];
-  fd_set rfds;
+  //fd_set rfds;
   int bytes;
 
   // Download-Test
@@ -48,12 +48,12 @@ int bwtest (int server)
 
   // Get Upload-Bandwidth from server
   printf ("Messung fertig\n");
-  fcntl(server, F_SETFL, O_NONBLOCK);
-  FD_SET(server, &rfds);
-  select(server+1, &rfds, NULL, NULL, NULL);
-  if (FD_ISSET(server, &rfds))
+  //fcntl(server, F_SETFL, O_NONBLOCK);
+  //FD_SET(server, &rfds);
+  //select(server+1, &rfds, NULL, NULL, NULL);
+  //if (FD_ISSET(server, &rfds))
     bytes = recv(server, buffer, sizeof(buffer), 0);
-  //buffer[bytes] = '\0';
+  buffer[bytes] = '\0';
   printf ("Upload Bandbreite: %s\n", buffer);
   return 0;
 }
@@ -66,7 +66,7 @@ int recv_bwtest(int server)
   fd_set rfds;
   struct timeval tv;
 
-  fcntl(server, F_SETFL, O_NONBLOCK);
+  //fcntl(server, F_SETFL, O_NONBLOCK);
 
   /* Wait up to five seconds. */
   tv.tv_sec = 5;
@@ -81,17 +81,19 @@ int recv_bwtest(int server)
     FD_SET(server, &rfds);
 
     select(server+1, &rfds, NULL, NULL, &tv); /* Don't rely on the value of tv now! */
-    bytes = recv(server, buffer, sizeof(buffer), 0);
+    //bytes = recv(server, buffer, sizeof(buffer), 0);
 
-    if (bytes > 0)
+    //if (bytes > 0)
+    if (FD_ISSET(server, &rfds))
     {
       //printf("Data is available now.\n"); /* FD_ISSET(0, &rfds) will be true. */
+      bytes = recv(server, buffer, sizeof(buffer),0); 
       recv_bytes += bytes;
     }
     else
     {
-      printf("No data within five seconds.\n");
-      printf("Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
+      //printf("No data within five seconds.\n");
+      printf("Download Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
       return 0;
     }
   }
@@ -112,8 +114,8 @@ int send_bwtest (int server)
     //printf ("Senden\n");
     if (send(server, buffer, BUFFER_SIZE, MSG_NOSIGNAL) == -1)
     {
-      printf ("Senden fehlgeschlagen\n");
-      return 0;
+      //printf ("Senden fehlgeschlagen\n");
+      //return 0;
     }
   }
 

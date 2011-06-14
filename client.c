@@ -129,7 +129,7 @@ int main (int argc, char *argv[])
   int s;
   struct sockaddr_in addr;
 
-  addr.sin_addr.s_addr = inet_addr("78.47.146.248");    /* z.B. inet_addr("127.0.0.1"); */
+  addr.sin_addr.s_addr = inet_addr(argv[1]);    /* z.B. inet_addr("127.0.0.1"); */
   addr.sin_port = htons(5001);             /* z.B. htons(80);              */
   addr.sin_family = AF_INET;
 

@@ -113,11 +113,11 @@ int send_bwtest (int server)
   char buffer[BUFFER_SIZE];
   time_t start;
 
-  if (send(server, "Upload", strlen("Upload"), MSG_NOSIGNAL) == -1)
+  /*if (send(server, "Upload", strlen("Upload"), MSG_NOSIGNAL) == -1)
     {
       printf ("Senden fehlgeschlagen\n");
       return 0;
-    }
+    }*/
 
 
   start = time(NULL);

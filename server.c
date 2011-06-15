@@ -34,6 +34,7 @@ int client_behandlung(int client)
   int bytes, recv_bytes, bandwidth;
   struct timeval tv;
   int retval;
+  int first = 1;
 
 
   printf ("Send to Client\n");
@@ -51,22 +52,28 @@ int client_behandlung(int client)
 
   printf ("Receive from client\n");
 
-  bytes = recv(client, buffer, sizeof(buffer), 0);
+  //tv.tv_sec = 5;
+  //tv.tv_usec = 0;
+
+  //select(client+1, &rfds, NULL, NULL, &tv);
+
+  /*bytes = recv(client, buffer, sizeof(buffer)-1, 0);
   buffer[bytes] = '\0';
+  printf ("%s", buffer);
   if(buffer != "Upload")
     {
        printf ("Fehler");
        return 1;
-    }
+    } */
 
-  fcntl(client, F_SETFL, O_NONBLOCK);
+  //fcntl(client, F_SETFL, O_NONBLOCK);
 
   /* Wait up to five seconds. */
   tv.tv_sec = 5;
   tv.tv_usec = 0;
 
   recv_bytes = 0;
-  start = time(NULL);
+  //start = time(NULL);
 
   while(1)
   {
@@ -74,14 +81,19 @@ int client_behandlung(int client)
     FD_SET(client, &rfds);
 
     select(client+1, &rfds, NULL, NULL, &tv);
-    
+
     // bytes = recv(client, buffer, sizeof(buffer), 0);
 
     if (FD_ISSET(client, &rfds))
     //if (bytes > 0)
     {
       //printf("Data is available now.\n");
-      bytes = recv(client, buffer, sizeof(buffer), 0);
+      if (first == 1)
+        {
+         start = time(NULL);
+         first = 0;
+        }
+      bytes = recv(client, buffer, sizeof(buffer)-1, 0);
       recv_bytes += bytes;
     }
     else

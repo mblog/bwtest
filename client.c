@@ -84,6 +84,7 @@ int recv_bwtest(int server)
     FD_ZERO(&rfds);
     FD_SET(server, &rfds);
 
+    tv.tv_sec = 3;
     select(server+1, &rfds, NULL, NULL, &tv); /* Don't rely on the value of tv now! */
     //bytes = recv(server, buffer, sizeof(buffer), 0);
 
@@ -97,9 +98,11 @@ int recv_bwtest(int server)
     else
     {
       //printf("No data within five seconds.\n");
-      printf("Download Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
+      printf("Download Bandbreite: %d\n", (recv_bytes/(time(NULL)-start-3))*8);
       return 0;
     }
+    //printf ("%d", tv.tv_sec);
+    
   }
   //printf("Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
   return 0;

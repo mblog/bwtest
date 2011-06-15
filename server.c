@@ -51,6 +51,14 @@ int client_behandlung(int client)
 
   printf ("Receive from client\n");
 
+  bytes = recv(client, buffer, sizeof(buffer), 0);
+  buffer[bytes] = '\0';
+  if(buffer != "Upload")
+    {
+       printf ("Fehler");
+       return 1;
+    }
+
   fcntl(client, F_SETFL, O_NONBLOCK);
 
   /* Wait up to five seconds. */

@@ -85,6 +85,7 @@ int client_behandlung(int client)
       {
         start = time(NULL);
         first_interval = 0;
+        printf ("Data\n");
         //tv.tv_sec = 0;
       }
       tv.tv_sec = 1;
@@ -95,7 +96,7 @@ int client_behandlung(int client)
     {
       printf("No more data\n");
       //printf("Bytes %d\n", recv_bytes);
-      bandwidth = (recv_bytes/(time(NULL)-start))*8;
+      bandwidth = (recv_bytes/(time(NULL)-start-1))*8;
       //printf("bandwidth: %d\n", bandwidth);
       //return 0;
       break;

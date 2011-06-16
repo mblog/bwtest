@@ -74,14 +74,14 @@ int client_behandlung(int client)
     FD_SET(client, &rfds);
 
     select(client+1, &rfds, NULL, NULL, &tv);
-    
+ 
     // bytes = recv(client, buffer, sizeof(buffer), 0);
 
     if (FD_ISSET(client, &rfds))
     //if (bytes > 0)
     {
       //printf("Data is available now.\n");
-      if (first_interval = 1)
+      if (first_interval == 1)
       {
         start = time(NULL);
         first_interval = 0;

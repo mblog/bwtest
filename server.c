@@ -42,7 +42,7 @@ int client_behandlung(int client)
 
   while ((time(NULL)-start) < TEST_TIME)
   {
-     if (send(client, buffer, BUFFER_SIZE, 0) < 0)
+     if (send(client, buffer, BUFFER_SIZE, MSG_NOSIGNAL) < 0)
      {
 	perror("fehlgeschlagen\n");
 	return -1;
@@ -85,6 +85,7 @@ int client_behandlung(int client)
       {
         start = time(NULL);
         first_interval = 0;
+        tv.tv_sec = 0;
       }
       bytes = recv(client, buffer, sizeof(buffer), 0);
       recv_bytes += bytes;

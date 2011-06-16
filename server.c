@@ -44,7 +44,7 @@ int client_behandlung(int client)
   {
      if (send(client, buffer, BUFFER_SIZE, MSG_NOSIGNAL) < 0)
      {
-	perror("fehlgeschlagen\n");
+	perror("Send error\n");
 	return -1;
      }
   }
@@ -92,10 +92,10 @@ int client_behandlung(int client)
     }
     else
     {
-      printf("No data\n");
+      printf("No more data\n");
       //printf("Bytes %d\n", recv_bytes);
       bandwidth = (recv_bytes/(time(NULL)-start))*8;
-      printf("Bandbreite: %d\n", bandwidth);
+      //printf("bandwidth: %d\n", bandwidth);
       //return 0;
       break;
     }
@@ -103,11 +103,13 @@ int client_behandlung(int client)
 
   //printf("Bandbreite: %d\n", (int)(recv_bytes/(time(NULL)-start))*8);
 
-  printf ("Sende Bandbreite an Client\n");
+  printf ("Send receive bandwitdth to client\n");
 
   //itoa(bandwidth ,bbandwidth, 10);
   sprintf(bbandwidth, "%d", bandwidth);
   send(client, bbandwidth, strlen(bbandwidth), 0); 
+
+  printf ("===============================\n");
 
   return 0;
 }
@@ -157,7 +159,7 @@ int main (int argc, char *argv[])
 	perror("accept() failed");
 	return 4;
       }
-    printf("client from %s\n", inet_ntoa(cli.sin_addr));
+    printf("Client from %s\n", inet_ntoa(cli.sin_addr));
     if (client_behandlung(c) == -1)
 	fprintf(stderr, "%s: client_behandlung() failed", argv[0]);
     close(c);

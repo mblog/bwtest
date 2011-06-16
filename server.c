@@ -74,7 +74,7 @@ int client_behandlung(int client)
     FD_SET(client, &rfds);
 
     select(client+1, &rfds, NULL, NULL, &tv);
- 
+
     // bytes = recv(client, buffer, sizeof(buffer), 0);
 
     if (FD_ISSET(client, &rfds))
@@ -85,8 +85,9 @@ int client_behandlung(int client)
       {
         start = time(NULL);
         first_interval = 0;
-        tv.tv_sec = 0;
+        //tv.tv_sec = 0;
       }
+      tv.tv_sec = 1;
       bytes = recv(client, buffer, sizeof(buffer), 0);
       recv_bytes += bytes;
     }

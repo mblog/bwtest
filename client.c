@@ -69,6 +69,7 @@ int recv_bwtest(int server)
   time_t start;
   fd_set rfds;
   struct timeval tv;
+  int first_interval = 1;
 
   //fcntl(server, F_SETFL, O_NONBLOCK);
 
@@ -76,7 +77,7 @@ int recv_bwtest(int server)
   tv.tv_sec = 5;
   tv.tv_usec = 0;
 
-  start = time(NULL);
+  //start = time(NULL);
   recv_bytes = 0;
 
   while(1)
@@ -84,7 +85,7 @@ int recv_bwtest(int server)
     FD_ZERO(&rfds);
     FD_SET(server, &rfds);
 
-    tv.tv_sec = 2;
+    //tv.tv_sec = 2;
     select(server+1, &rfds, NULL, NULL, &tv); /* Don't rely on the value of tv now! */
     //bytes = recv(server, buffer, sizeof(buffer), 0);
 
@@ -92,17 +93,24 @@ int recv_bwtest(int server)
     if (FD_ISSET(server, &rfds))
     {
       //printf("Data is available now.\n"); /* FD_ISSET(0, &rfds) will be true. */
+      if (first_interval == 1)
+      {
+        start = time(NULL);
+        first_interval = 0;
+        //tv.tv_sec = 1;
+      }
+      tv.tv_sec = 1;
       bytes = recv(server, buffer, sizeof(buffer),0); 
       recv_bytes += bytes;
     }
     else
     {
       //printf("No data within five seconds.\n");
-      printf("Download Bandbreite: %d\n", (recv_bytes/(time(NULL)-start-2))*8);
+      printf("Download Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
       return 0;
     }
     //printf ("%d", tv.tv_sec);
-    
+
   }
   //printf("Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
   return 0;

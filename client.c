@@ -17,11 +17,14 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-
+#define VERSION 0.1
 #define TEST_TIME 5
 #define BUFFER_SIZE 1024
 
 /* --------- prototypes --------- */
+
+/* Send Version to Server */
+int send_version (int server);
 
 /* Run Tests with Server */
 int bwtest(int server);
@@ -33,6 +36,19 @@ int recv_bwtest(int server);
 int send_bwtest(int server);
 
 /* ------------------------------ */
+
+int send_version (int server)
+{
+  char buffer[10];
+
+  sprintf(buffer, "%2.2f", VERSION);
+  if (send(server, buffer, strlen(buffer), 0) == -1)
+    {
+      printf ("Senden fehlgeschlagen\n");
+      return 1;
+    }
+  return 0;
+}
 
 int bwtest (int server)
 {
@@ -188,6 +204,8 @@ int main (int argc, char *argv[])
     perror("connect() failed");
     return 2;
   }
+
+  send_version(s);
 
   // ToDo
   bwtest(s);

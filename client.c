@@ -122,7 +122,7 @@ int recv_bwtest(int server)
     else
     {
       //printf("No data within five seconds.\n");
-      printf("Download Bandbreite: %d\n", (recv_bytes/(time(NULL)-start))*8);
+      printf("Download Bandbreite: %d\n", (recv_bytes/(time(NULL)-start-1))*8);
       return 0;
     }
     //printf ("%d", tv.tv_sec);

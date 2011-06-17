@@ -24,7 +24,7 @@
 /* --------- prototypes --------- */
 
 /* Send Version to Server */
-int send_version (int server);
+int version_check (int server);
 
 /* Run Tests with Server */
 int bwtest(int server);
@@ -37,9 +37,10 @@ int send_bwtest(int server);
 
 /* ------------------------------ */
 
-int send_version (int server)
+int version_check (int server)
 {
   char buffer[] = VERSION;
+  int bytes;
 
   //sprintf(buffer, "%2.2f", VERSION);
   if (send(server, buffer, strlen(buffer), 0) == -1)
@@ -47,6 +48,11 @@ int send_version (int server)
       printf ("Senden fehlgeschlagen\n");
       return 1;
     }
+  bytes = recv(server, buffer, sizeof(buffer),0);
+  //sprintf(client_version, "%f", buffer);
+  buffer[bytes] = '\0';
+  if (strcmp(buffer, VERSION) != 0)
+    return 1;
   return 0;
 }
 
@@ -181,7 +187,7 @@ int main (int argc, char *argv[])
         if (!host)
         {
             herror("gethostbyname() failed");
-            return 2;
+            return 1;
         }
         addr.sin_addr = *(struct in_addr*)host->h_addr;
     }
@@ -202,10 +208,15 @@ int main (int argc, char *argv[])
   if (connect(s, (struct sockaddr *)&addr, sizeof(addr)) == -1)
   {
     perror("connect() failed");
-    return 2;
+    return 1;
   }
 
-  send_version(s);
+  // Versions check
+  if (version_check(s) == 1)
+   {
+    printf ("Falsche Client-Version\n");
+    return 2;
+   }
 
   // ToDo
   bwtest(s);

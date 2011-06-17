@@ -17,7 +17,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#define VERSION 0.1
+#define VERSION "0.1"
 #define TEST_TIME 5
 #define BUFFER_SIZE 1024
 
@@ -39,9 +39,9 @@ int send_bwtest(int server);
 
 int send_version (int server)
 {
-  char buffer[10];
+  char buffer[] = VERSION;
 
-  sprintf(buffer, "%2.2f", VERSION);
+  //sprintf(buffer, "%2.2f", VERSION);
   if (send(server, buffer, strlen(buffer), 0) == -1)
     {
       printf ("Senden fehlgeschlagen\n");

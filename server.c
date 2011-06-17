@@ -18,7 +18,7 @@
 
 #define TEST_TIME 5
 #define BUFFER_SIZE 1024
-#define VERSION 0.1
+#define VERSION "0.1"
 
 /* --------- prototypes --------- */
 
@@ -37,7 +37,8 @@ int check_client_version(int client)
 
   recv(client, buffer, sizeof(buffer),0);
   //sprintf(client_version, "%f", buffer); 
-  if (atof(buffer) != VERSION)
+  printf ("Client Version: %s\n", buffer);
+  if (buffer != VERSION)
    return -1;
   return 0;
 }
@@ -180,7 +181,7 @@ int main (int argc, char *argv[])
     printf("Client from %s\n", inet_ntoa(cli.sin_addr));
     if (check_client_version(c) == -1)
       {
-        fprintf(stderr, "Falsche Client-Version"); 
+        fprintf(stderr, "Falsche Client-Version\n"); 
         return 1;
       }
     if (client_behandlung(c) == -1)

@@ -34,11 +34,15 @@ int check_client_version(int client)
 {
   char buffer[BUFFER_SIZE];
   double client_version;
+  int bytes;
 
-  recv(client, buffer, sizeof(buffer),0);
+  bytes = recv(client, buffer, sizeof(buffer),0);
   //sprintf(client_version, "%f", buffer); 
+  buffer[bytes] = '\0';
   printf ("Client Version: %s\n", buffer);
-  if (buffer != VERSION)
+  printf ("Server Version: %s\n", VERSION);
+  send(client, VERSION, strlen(VERSION), 0);
+  if (strcmp (buffer, VERSION) != 0)
    return -1;
   return 0;
 }
@@ -128,7 +132,7 @@ int client_behandlung(int client)
   sprintf(bbandwidth, "%d", bandwidth);
   send(client, bbandwidth, strlen(bbandwidth), 0); 
 
-  printf ("===============================\n");
+  //printf ("===============================\n");
 
   return 0;
 }
@@ -171,6 +175,7 @@ int main (int argc, char *argv[])
   // Accept Client Connection
   for(;;)
   {
+    printf ("===============================\n");
     cli_size = sizeof(cli);
     c = accept(s, (struct sockaddr *)&cli, &cli_size);
     if (c == -1)
@@ -182,11 +187,13 @@ int main (int argc, char *argv[])
     if (check_client_version(c) == -1)
       {
         fprintf(stderr, "Falsche Client-Version\n"); 
-        return 1;
+        continue;
       }
     if (client_behandlung(c) == -1)
-	fprintf(stderr, "%s: client_behandlung() failed", argv[0]);
+	fprintf(stderr, "%s: client_behandlung() failed\n", argv[0]);
     close(c);
+
+    //printf ("===============================\n");
   }
 
   close(s);

@@ -37,7 +37,6 @@ int check_client_version(int client)
   int bytes;
 
   bytes = recv(client, buffer, sizeof(buffer),0);
-  //sprintf(client_version, "%f", buffer); 
   buffer[bytes] = '\0';
   printf ("Client Version: %s\n", buffer);
   printf ("Server Version: %s\n", VERSION);
@@ -80,7 +79,6 @@ int client_behandlung(int client)
   tv.tv_usec = 0;
 
   recv_bytes = 0;
-  //start = time(NULL);
 
   while(1)
   {
@@ -89,18 +87,13 @@ int client_behandlung(int client)
 
     select(client+1, &rfds, NULL, NULL, &tv);
 
-    // bytes = recv(client, buffer, sizeof(buffer), 0);
-
     if (FD_ISSET(client, &rfds))
-    //if (bytes > 0)
     {
-      //printf("Data is available now.\n");
       if (first_interval == 1)
       {
         start = time(NULL);
         first_interval = 0;
         printf ("Data\n");
-        //tv.tv_sec = 0;
       }
       tv.tv_sec = 1;
       bytes = recv(client, buffer, sizeof(buffer), 0);
@@ -109,23 +102,15 @@ int client_behandlung(int client)
     else
     {
       printf("No more data\n");
-      //printf("Bytes %d\n", recv_bytes);
       bandwidth = (recv_bytes/(time(NULL)-start-1))*8;
-      //printf("bandwidth: %d\n", bandwidth);
-      //return 0;
       break;
     }
   }
 
-  //printf("Bandbreite: %d\n", (int)(recv_bytes/(time(NULL)-start))*8);
-
   printf ("Send receive bandwitdth to client\n");
 
-  //itoa(bandwidth ,bbandwidth, 10);
   sprintf(bbandwidth, "%d", bandwidth);
   send(client, bbandwidth, strlen(bbandwidth), 0); 
-
-  //printf ("===============================\n");
 
   return 0;
 }
@@ -185,8 +170,6 @@ int main (int argc, char *argv[])
     if (client_behandlung(c) == -1)
 	fprintf(stderr, "%s: client_behandlung() failed\n", argv[0]);
     close(c);
-
-    //printf ("===============================\n");
   }
 
   close(s);

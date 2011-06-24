@@ -87,7 +87,8 @@ int bwtest (int server)
 int recv_bwtest(int server)
 {
   char buffer[BUFFER_SIZE];
-  int bytes, recv_bytes;
+  int bytes;
+  unsigned long long recv_bytes;
   time_t start;
   fd_set rfds;
   struct timeval tv;
@@ -128,7 +129,7 @@ int recv_bwtest(int server)
     else
     {
       //printf("No data within five seconds.\n");
-      printf("Download Bandbreite: %d\n", (recv_bytes/(time(NULL)-start-1))*8);
+      printf("Download Bandbreite: %llu\n", ((recv_bytes/(time(NULL)-start-1))*8));
       return 0;
     }
     //printf ("%d", tv.tv_sec);

@@ -44,7 +44,7 @@ int version_check (int server)
 
   if (send(server, buffer, strlen(buffer), 0) == -1)
     {
-      printf ("Senden fehlgeschlagen\n");
+      perror ("Senden fehlgeschlagen\n");
       return 1;
     }
   bytes = recv(server, buffer, sizeof(buffer),0);
@@ -103,6 +103,7 @@ int recv_bwtest(int server)
     FD_ZERO(&rfds);
     FD_SET(server, &rfds);
 
+    // Check Sockets
     select(server+1, &rfds, NULL, NULL, &tv); /* Don't rely on the value of tv now! */
 
     if (FD_ISSET(server, &rfds))
@@ -187,7 +188,7 @@ int main (int argc, char *argv[])
   // Versions check
   if (version_check(s) == 1)
    {
-    printf ("Falsche Client-Version\n");
+    perror ("Falsche Client-Version\n");
     return 2;
    }
 

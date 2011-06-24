@@ -54,13 +54,13 @@ int client_behandlung(int client)
   int bytes;
   unsigned long long recv_bytes, bandwidth;
   struct timeval tv;
-  int retval;
+  //int retval;
   int first_interval = 1;
 
+  // Send
   printf ("Send to Client\n");
-
+  // Set Start-Time and Send to Client
   start = time(NULL);
-
   while ((time(NULL)-start) < TEST_TIME)
   {
      if (send(client, buffer, BUFFER_SIZE, MSG_NOSIGNAL) < 0)
@@ -70,8 +70,8 @@ int client_behandlung(int client)
      }
   }
 
+  // Receive
   printf ("Receive from client\n");
-
   //fcntl(client, F_SETFL, O_NONBLOCK);
 
   /* Wait up to five seconds. */
@@ -85,10 +85,12 @@ int client_behandlung(int client)
     FD_ZERO(&rfds);
     FD_SET(client, &rfds);
 
+    // Check Sockets
     select(client+1, &rfds, NULL, NULL, &tv);
 
     if (FD_ISSET(client, &rfds))
     {
+      // On First Test-Interval set Start-Time
       if (first_interval == 1)
       {
         start = time(NULL);
@@ -108,7 +110,6 @@ int client_behandlung(int client)
   }
 
   printf ("Send receive bandwitdth to client\n");
-
   sprintf(bbandwidth, "%llu", bandwidth);
   send(client, bbandwidth, strlen(bbandwidth), 0); 
 
@@ -164,11 +165,11 @@ int main (int argc, char *argv[])
     printf("Client from %s\n", inet_ntoa(cli.sin_addr));
     if (check_client_version(c) == -1)
       {
-        fprintf(stderr, "Falsche Client-Version\n"); 
+        perror("Falsche Client-Version\n"); 
         continue;
       }
     if (client_behandlung(c) == -1)
-	fprintf(stderr, "%s: client_behandlung() failed\n", argv[0]);
+	perror("%s: client_behandlung() failed\n", argv[0]);
     close(c);
   }
 

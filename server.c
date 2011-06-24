@@ -109,7 +109,7 @@ int client_behandlung(int client)
 
   printf ("Send receive bandwitdth to client\n");
 
-  sprintf(bbandwidth, "%d", bandwidth);
+  sprintf(bbandwidth, "%llu", bandwidth);
   send(client, bbandwidth, strlen(bbandwidth), 0); 
 
   return 0;

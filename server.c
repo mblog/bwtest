@@ -52,8 +52,10 @@ int client_behandlung(int client)
   time_t start;
   fd_set rfds;
   int bytes;
-  unsigned long long recv_bytes, bandwidth;
-  struct timeval tv;
+  unsigned long long recv_bytes;
+  unsigned long long  bandwidth;
+  struct timeval timeout;
+  struct timeval start_time, end_time;
   //int retval;
   int first_interval = 1;
 
@@ -75,8 +77,8 @@ int client_behandlung(int client)
   //fcntl(client, F_SETFL, O_NONBLOCK);
 
   /* Wait up to five seconds. */
-  tv.tv_sec = 5;
-  tv.tv_usec = 0;
+  timeout.tv_sec = 5;
+  timeout.tv_usec = 0;
 
   recv_bytes = 0;
 
@@ -86,25 +88,27 @@ int client_behandlung(int client)
     FD_SET(client, &rfds);
 
     // Check Sockets
-    select(client+1, &rfds, NULL, NULL, &tv);
+    select(client+1, &rfds, NULL, NULL, &timeout);
 
     if (FD_ISSET(client, &rfds))
     {
       // On First Test-Interval set Start-Time
       if (first_interval == 1)
       {
-        start = time(NULL);
+        //start = time(NULL);
+        gettimeofday(&start_time, NULL);
         first_interval = 0;
         printf ("Data\n");
       }
-      tv.tv_sec = 1;
+      timeout.tv_sec = 1;
       bytes = recv(client, buffer, sizeof(buffer), 0);
       recv_bytes += bytes;
     }
     else
     {
       printf("No more data\n");
-      bandwidth = (recv_bytes/(time(NULL)-start-1))*8;
+      gettimeofday(&end_time, NULL);
+      bandwidth = (recv_bytes/((end_time.tv_sec+end_time.tv_usec/1000000.0)-(start_time.tv_sec+start_time.tv_usec/1000000.0)))*8;
       break;
     }
   }
@@ -169,7 +173,7 @@ int main (int argc, char *argv[])
         continue;
       }
     if (client_behandlung(c) == -1)
-	perror("%s: client_behandlung() failed\n", argv[0]);
+	perror("client_behandlung() failed\n");
     close(c);
   }
 

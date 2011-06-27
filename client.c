@@ -84,16 +84,17 @@ int recv_bwtest(int server)
   char buffer[BUFFER_SIZE];
   int bytes;
   unsigned long long recv_bytes;
-  time_t start;
+  //time_t start;
   fd_set rfds;
-  struct timeval tv;
+  struct timeval timeout;
+  struct timeval start_time, end_time;
   int first_interval = 1;
 
   //fcntl(server, F_SETFL, O_NONBLOCK);
 
   /* Wait up to five seconds. */
-  tv.tv_sec = 5;
-  tv.tv_usec = 0;
+  timeout.tv_sec = 5;
+  timeout.tv_usec = 0;
 
   //start = time(NULL);
   recv_bytes = 0;
@@ -104,22 +105,24 @@ int recv_bwtest(int server)
     FD_SET(server, &rfds);
 
     // Check Sockets
-    select(server+1, &rfds, NULL, NULL, &tv); /* Don't rely on the value of tv now! */
+    select(server+1, &rfds, NULL, NULL, &timeout); /* Don't rely on the value of tv now! */
 
     if (FD_ISSET(server, &rfds))
     {
       if (first_interval == 1)
       {
-        start = time(NULL);
+        //start_time = (NULL);
+        gettimeofday(&start_time, NULL);
         first_interval = 0;
       }
-      tv.tv_sec = 1;
+      timeout.tv_sec = 1;
       bytes = recv(server, buffer, sizeof(buffer),0); 
       recv_bytes += bytes;
     }
     else
     {
-      printf("Download Bandbreite: %llu\n", ((recv_bytes/(time(NULL)-start-1))*8));
+      gettimeofday(&end_time, NULL);
+      printf("Download Bandbreite: %llu\n", (unsigned long long)(recv_bytes/((end_time.tv_sec+end_time.tv_usec/1000000.0)-(start_time.tv_sec+start_time.tv_usec/1000000.0))*8));
       return 0;
     }
   }

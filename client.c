@@ -19,7 +19,7 @@
 
 #define VERSION "0.1"
 #define TEST_TIME 5
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 2048
 
 /* --------- prototypes --------- */
 

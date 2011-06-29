@@ -71,10 +71,10 @@ int client_behandlung(int client)
 	return -1;
      }
   }
-
+  //sleep(5);
   // Receive
   printf ("Receive from client\n");
-  //fcntl(client, F_SETFL, O_NONBLOCK);
+  fcntl(client, F_SETFL, O_NONBLOCK);
 
   /* Wait up to five seconds. */
   timeout.tv_sec = 5;
@@ -108,7 +108,7 @@ int client_behandlung(int client)
     {
       printf("No more data\n");
       gettimeofday(&end_time, NULL);
-      bandwidth = (recv_bytes/((end_time.tv_sec+end_time.tv_usec/1000000.0)-(start_time.tv_sec+start_time.tv_usec/1000000.0)))*8;
+      bandwidth = (recv_bytes/((end_time.tv_sec+end_time.tv_usec/1000000.0)-(start_time.tv_sec+start_time.tv_usec/1000000.0)-1))*8;
       break;
     }
   }

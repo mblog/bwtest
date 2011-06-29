@@ -111,7 +111,6 @@ int recv_bwtest(int server)
     {
       if (first_interval == 1)
       {
-        //start_time = (NULL);
         gettimeofday(&start_time, NULL);
         first_interval = 0;
       }
@@ -122,7 +121,7 @@ int recv_bwtest(int server)
     else
     {
       gettimeofday(&end_time, NULL);
-      printf("Download Bandbreite: %llu\n", (unsigned long long)(recv_bytes/((end_time.tv_sec+end_time.tv_usec/1000000.0)-(start_time.tv_sec+start_time.tv_usec/1000000.0))*8));
+      printf("Download Bandbreite: %ld\n", recv_bytes/(((end_time.tv_sec*1000+end_time.tv_usec/1000)-(start_time.tv_sec*1000+start_time.tv_usec/1000)-1000)/1000)*8));
       return 0;
     }
   }

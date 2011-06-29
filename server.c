@@ -71,10 +71,9 @@ int client_behandlung(int client)
 	return -1;
      }
   }
-  //sleep(5);
   // Receive
   printf ("Receive from client\n");
-  fcntl(client, F_SETFL, O_NONBLOCK);
+  //fcntl(client, F_SETFL, O_NONBLOCK);
 
   /* Wait up to five seconds. */
   timeout.tv_sec = 5;

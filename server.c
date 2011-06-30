@@ -16,8 +16,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define TEST_TIME 5
-#define BUFFER_SIZE 2048
+#define TEST_TIME 10
+#define BUFFER_SIZE 4096
 #define VERSION "0.1"
 
 /* --------- prototypes --------- */

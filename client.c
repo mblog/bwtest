@@ -18,8 +18,8 @@
 #include <netdb.h>
 
 #define VERSION "0.1"
-#define TEST_TIME 5
-#define BUFFER_SIZE 2048
+#define TEST_TIME 10
+#define BUFFER_SIZE 4096
 
 /* --------- prototypes --------- */
 

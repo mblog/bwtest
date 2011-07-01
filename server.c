@@ -151,12 +151,12 @@ int main (int argc, char *argv[])
   }
 
   /* Disable the Nagle (TCP No Delay) algorithm  */
-  flag = 1;
+  /*flag = 1;
   ret = setsockopt( s, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(flag) );
   if (ret == -1) {
     printf("Couldn't setsockopt(TCP_NODELAY)\n");
     exit( EXIT_FAILURE );
-  } 
+  } */
   
 
   /* Socket Buffer Size */ 

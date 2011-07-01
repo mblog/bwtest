@@ -17,7 +17,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#define VERSION "0.1"
+#define VERSION "0.2"
 #define TEST_TIME 10
 #define BUFFER_SIZE 4096
 
@@ -170,7 +170,7 @@ int main (int argc, char *argv[])
     }
 
   //addr.sin_addr.s_addr = inet_addr();    /* z.B. inet_addr("127.0.0.1"); */
-  addr.sin_port = htons(5001);             /* z.B. htons(80);              */
+  addr.sin_port = htons(40001);             /* z.B. htons(80);              */
   addr.sin_family = AF_INET;
 
   // Create Socket

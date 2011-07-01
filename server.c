@@ -20,7 +20,7 @@
 
 #define TEST_TIME 10
 #define BUFFER_SIZE 4096
-#define VERSION "0.1"
+#define VERSION "0.2"
 
 /* --------- prototypes --------- */
 
@@ -73,6 +73,7 @@ int client_behandlung(int client)
 	return -1;
      }
   }
+
   // Receive
   printf ("Receive from client\n");
   //fcntl(client, F_SETFL, O_NONBLOCK);
@@ -139,7 +140,7 @@ int main (int argc, char *argv[])
     }
 
   addr.sin_addr.s_addr = INADDR_ANY;
-  addr.sin_port = htons(5001);
+  addr.sin_port = htons(40001);
   addr.sin_family = AF_INET;
 
   // Create Socket
@@ -160,9 +161,7 @@ int main (int argc, char *argv[])
   
 
   /* Socket Buffer Size */ 
-  //sock_buf_size = strtod(argv[1], NULL);
   sock_buf_size = argv[1];
-  //printf ("BDP: %d", sock_buf_size);
   setsockopt( s, SOL_SOCKET, SO_SNDBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
   setsockopt( s, SOL_SOCKET, SO_RCVBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
 
@@ -190,7 +189,7 @@ int main (int argc, char *argv[])
     if (c == -1)
       {
 	perror("accept() failed");
-	return 4;
+	continue;
       }
     printf("Client from %s\n", inet_ntoa(cli.sin_addr));
     if (check_client_version(c) == -1)

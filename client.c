@@ -146,7 +146,8 @@ int send_bwtest (int server)
 
 int main (int argc, char *argv[])
 {
-  int s, ret, sock_buf_size;
+  int s, ret;
+  char * sock_buf_size;
   struct sockaddr_in addr;
   struct hostent *host;
 

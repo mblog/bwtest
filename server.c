@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+#include <sys/time.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdlib.h>
@@ -15,6 +16,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netinet/tcp.h>
 
 #define TEST_TIME 10
 #define BUFFER_SIZE 4096
@@ -123,7 +125,8 @@ int client_behandlung(int client)
 
 int main (int argc, char *argv[])
 {
-  int s, c, flag, ret, sock_buf_size;
+  int s, c, flag, ret;
+  char *sock_buf_size;
   struct sockaddr_in addr;
   struct sockaddr_in cli;
   int cli_size;
@@ -147,17 +150,19 @@ int main (int argc, char *argv[])
     return 1;
   }
 
-  /* Disable the Nagle (TCP No Delay) algorithm 
+  /* Disable the Nagle (TCP No Delay) algorithm  */
   flag = 1;
   ret = setsockopt( s, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(flag) );
   if (ret == -1) {
     printf("Couldn't setsockopt(TCP_NODELAY)\n");
     exit( EXIT_FAILURE );
-  }
-  */
+  } 
+  
 
   /* Socket Buffer Size */ 
+  //sock_buf_size = strtod(argv[1], NULL);
   sock_buf_size = argv[1];
+  //printf ("BDP: %d", sock_buf_size);
   setsockopt( s, SOL_SOCKET, SO_SNDBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
   setsockopt( s, SOL_SOCKET, SO_RCVBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
 

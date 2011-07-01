@@ -146,7 +146,7 @@ int send_bwtest (int server)
 
 int main (int argc, char *argv[])
 {
-  int s;
+  int s, ret, sock_buf_size;
   struct sockaddr_in addr;
   struct hostent *host;
 
@@ -179,6 +179,13 @@ int main (int argc, char *argv[])
     perror("socket() failed");
     return 1;
   }
+
+  /* Socket Buffer */
+  sock_buf_size = argv[2];
+
+  ret = setsockopt( s, SOL_SOCKET, SO_SNDBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
+  ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
+
 
   // Connect to Server
   if (connect(s, (struct sockaddr *)&addr, sizeof(addr)) == -1)

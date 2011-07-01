@@ -123,10 +123,17 @@ int client_behandlung(int client)
 
 int main (int argc, char *argv[])
 {
-  int s, c;
+  int s, c, flag, ret, sock_buf_size;
   struct sockaddr_in addr;
   struct sockaddr_in cli;
   int cli_size;
+
+  //Check Arguments
+  if (argc < 2)
+    {
+        fprintf(stderr, "usage: %s <BDP>\n", argv[0]);
+        return 1;
+    }
 
   addr.sin_addr.s_addr = INADDR_ANY;
   addr.sin_port = htons(5001);
@@ -139,6 +146,21 @@ int main (int argc, char *argv[])
     perror("socket() failed");
     return 1;
   }
+
+  /* Disable the Nagle (TCP No Delay) algorithm 
+  flag = 1;
+  ret = setsockopt( s, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(flag) );
+  if (ret == -1) {
+    printf("Couldn't setsockopt(TCP_NODELAY)\n");
+    exit( EXIT_FAILURE );
+  }
+  */
+
+  /* Socket Buffer Size */ 
+  sock_buf_size = argv[1];
+  setsockopt( s, SOL_SOCKET, SO_SNDBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
+  setsockopt( s, SOL_SOCKET, SO_RCVBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
+
 
   // Bind Socket
   if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) == -1)

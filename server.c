@@ -215,6 +215,7 @@ int main (int argc, char *argv[])
         continue;
       }
     get_socket_buffersize(c);
+    printf ("Socket Buffer Size: %s", sock_buf_size);
     setsockopt( s, SOL_SOCKET, SO_SNDBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
     setsockopt( s, SOL_SOCKET, SO_RCVBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
     if (client_behandlung(c) == -1)

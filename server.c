@@ -20,12 +20,17 @@
 
 #define TEST_TIME 10
 #define BUFFER_SIZE 4096
-#define VERSION "0.2"
+#define VERSION "0.21"
+
+char* sock_buf_size;
 
 /* --------- prototypes --------- */
 
 // Check Client-Version
 int check_client_version(int client);
+
+// Get Socket-Buffer-Size from client
+void get_socket_buffersize(int client);
 
 // Todo if client connects
 int client_behandlung(int client);
@@ -35,7 +40,7 @@ int client_behandlung(int client);
 int check_client_version(int client)
 {
   char buffer[BUFFER_SIZE];
-  double client_version;
+  //double client_version;
   int bytes;
 
   bytes = recv(client, buffer, sizeof(buffer),0);
@@ -47,6 +52,18 @@ int check_client_version(int client)
    return -1;
   return 0;
 }
+
+void get_socket_buffersize(int client)
+{
+  char buffer[BUFFER_SIZE];
+  //double client_version;
+  int bytes;
+
+  bytes = recv(client, buffer, sizeof(buffer),0);
+  buffer[bytes] = '\0';
+  strncpy (sock_buf_size, buffer,bytes);
+}
+
 
 int client_behandlung(int client)
 {
@@ -133,11 +150,11 @@ int main (int argc, char *argv[])
   int cli_size;
 
   //Check Arguments
-  if (argc < 2)
+  /*if (argc < 2)
     {
         fprintf(stderr, "usage: %s <BDP>\n", argv[0]);
         return 1;
-    }
+    }*/
 
   addr.sin_addr.s_addr = INADDR_ANY;
   addr.sin_port = htons(40001);
@@ -161,10 +178,10 @@ int main (int argc, char *argv[])
   
 
   /* Socket Buffer Size */ 
-  sock_buf_size = argv[1];
+  /* sock_buf_size = argv[1];
   setsockopt( s, SOL_SOCKET, SO_SNDBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
   setsockopt( s, SOL_SOCKET, SO_RCVBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
-
+  */
 
   // Bind Socket
   if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) == -1)
@@ -197,6 +214,9 @@ int main (int argc, char *argv[])
         perror("Falsche Client-Version\n"); 
         continue;
       }
+    get_socket_buffersize(c);
+    setsockopt( s, SOL_SOCKET, SO_SNDBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
+    setsockopt( s, SOL_SOCKET, SO_RCVBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
     if (client_behandlung(c) == -1)
 	perror("client_behandlung() failed\n");
     close(c);

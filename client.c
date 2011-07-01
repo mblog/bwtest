@@ -17,7 +17,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#define VERSION "0.2"
+#define VERSION "0.21"
 #define TEST_TIME 10
 #define BUFFER_SIZE 4096
 
@@ -25,6 +25,9 @@
 
 /* Send Version to Server */
 int version_check (int server);
+
+/* Send Socket-Buffer-Size to Server */
+int send_socket_buffersize(int server, char * bdp);
 
 /* Run Tests with Server */
 int bwtest(int server);
@@ -51,6 +54,21 @@ int version_check (int server)
   buffer[bytes] = '\0';
   if (strcmp(buffer, VERSION) != 0)
     return 1;
+  return 0;
+}
+
+int send_socket_buffersize(int server, char* bdp)
+{
+  //char buffer[10];
+  int bytes;
+
+  //strcpy(buffer, bdp); 
+
+  if (send(server, bdp, strlen(bdp), 0) == -1)
+    {
+      perror ("Senden fehlgeschlagen\n");
+      return 1;
+    }
   return 0;
 }
 
@@ -201,6 +219,13 @@ int main (int argc, char *argv[])
     perror ("Falsche Client-Version\n");
     return 2;
    }
+
+  // Send BDP to Server
+  if (send_socket_buffersize(s, sock_buf_size))
+  {
+    perror ("Fehler beim senden der Buffersize\n");
+    return 3;
+  }
 
   // ToDo
   bwtest(s);

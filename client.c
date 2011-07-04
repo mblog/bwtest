@@ -60,7 +60,7 @@ int version_check (int server)
 int send_socket_buffersize(int server, char* bdp)
 {
   //char buffer[10];
-  int bytes;
+  //int bytes;
 
   //strcpy(buffer, bdp); 
 

@@ -22,7 +22,7 @@
 #define BUFFER_SIZE 4096
 #define VERSION "0.21"
 
-char* sock_buf_size;
+//char* sock_buf_size;
 
 /* --------- prototypes --------- */
 
@@ -30,7 +30,7 @@ char* sock_buf_size;
 int check_client_version(int client);
 
 // Get Socket-Buffer-Size from client
-void get_socket_buffersize(int client);
+int get_socket_buffersize(int client);
 
 // Todo if client connects
 int client_behandlung(int client);
@@ -53,7 +53,7 @@ int check_client_version(int client)
   return 0;
 }
 
-void get_socket_buffersize(int client)
+int get_socket_buffersize(int client)
 {
   char buffer[BUFFER_SIZE];
   //double client_version;
@@ -61,9 +61,9 @@ void get_socket_buffersize(int client)
 
   bytes = recv(client, buffer, sizeof(buffer),0);
   buffer[bytes] = '\0';
-  strncpy (sock_buf_size, buffer,bytes);
+  //strncpy (sock_buf_size, buffer,bytes);
+  return atoi(buffer);
 }
-
 
 int client_behandlung(int client)
 {
@@ -145,6 +145,7 @@ int main (int argc, char *argv[])
 {
   int s, c, flag, ret;
   char *sock_buf_size;
+  char bdp[10];
   struct sockaddr_in addr;
   struct sockaddr_in cli;
   int cli_size;
@@ -214,10 +215,15 @@ int main (int argc, char *argv[])
         perror("Falsche Client-Version\n"); 
         continue;
       }
-    get_socket_buffersize(c);
-    printf ("Socket Buffer Size: %s", sock_buf_size);
-    setsockopt( s, SOL_SOCKET, SO_SNDBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
-    setsockopt( s, SOL_SOCKET, SO_RCVBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
+
+    // Get Socket Buffer Size from Client
+    sprintf(bdp, "%d", get_socket_buffersize(c));
+    //printf ("Socket Buffer Size: %s\n", bdp);
+    sock_buf_size = bdp;
+    printf ("Socket Buffer Size: %s\n", sock_buf_size);
+    ret = setsockopt( s, SOL_SOCKET, SO_SNDBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
+    ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
+    //printf ("Fehler? %d\n", ret); 
     if (client_behandlung(c) == -1)
 	perror("client_behandlung() failed\n");
     close(c);

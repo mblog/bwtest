@@ -59,11 +59,6 @@ int version_check (int server)
 
 int send_socket_buffersize(int server, char* bdp)
 {
-  //char buffer[10];
-  //int bytes;
-
-  //strcpy(buffer, bdp); 
-
   if (send(server, bdp, strlen(bdp), 0) == -1)
     {
       perror ("Senden fehlgeschlagen\n");
@@ -102,7 +97,6 @@ int recv_bwtest(int server)
   char buffer[BUFFER_SIZE];
   int bytes;
   unsigned long long recv_bytes;
-  //time_t start;
   fd_set rfds;
   struct timeval timeout;
   struct timeval start_time, end_time;
@@ -114,7 +108,6 @@ int recv_bwtest(int server)
   timeout.tv_sec = 5;
   timeout.tv_usec = 0;
 
-  //start = time(NULL);
   recv_bytes = 0;
 
   while(1)
@@ -234,4 +227,5 @@ int main (int argc, char *argv[])
 
   return 0;
 }
+
 

@@ -64,12 +64,13 @@ int check_client_version(int client)
 
 int client_behandlung(int client)
 {
-  char buffer[BUFFER_SIZE], bbandwidth[20];
+  char buffer[BUFFER_SIZE];
   time_t start;
   fd_set rfds;
   int bytes;
-  unsigned long long recv_bytes;
-  unsigned long long  bandwidth;
+  unsigned long int recv_bytes;
+  //unsigned long long bandwidth;
+  unsigned long int diff;
   struct timeval timeout;
   struct timeval start_time, end_time;
   int first_interval = 1;
@@ -123,14 +124,16 @@ int client_behandlung(int client)
     {
       printf("No more data\n");
       gettimeofday(&end_time, NULL);
-      bandwidth = (recv_bytes/((end_time.tv_sec+end_time.tv_usec/1000000.0)-(start_time.tv_sec+start_time.tv_usec/1000000.0)-1))*8;
+      //bandwidth = (recv_bytes/((end_time.tv_sec+end_time.tv_usec/1000000.0)-(start_time.tv_sec+start_time.tv_usec/1000000.0)-1))*8;
       break;
     }
   }
 
-  printf ("Send receive bandwitdth to client\n");
-  sprintf(bbandwidth, "%llu", bandwidth);
-  send(client, bbandwidth, strlen(bbandwidth), 0); 
+  diff = htons(end_time.tv_sec*1000+end_time.tv_usec/1000)-(start_time.tv_sec*1000+start_time.tv_usec/1000)-1000;
+  printf ("Send data to client\n");
+  //sprintf(buffer, "%u", diff);
+  send(client, &diff, diff, 0);
+  //sprintf(buffer, "%u", htons(recv_b 
 
   return 0;
 }

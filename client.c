@@ -88,7 +88,10 @@ int bwtest (int server)
   //fcntl(server, F_SETFL, O_NONBLOCK);
   bytes = recv(server, buffer, sizeof(buffer), 0);
   buffer[bytes] = '\0';
-  printf ("Upload Bandbreite:%s\n", buffer);
+  printf ("Gesendete Bytes:%s\n", buffer);
+  bytes = recv(server, buffer, sizeof(buffer), 0);
+  buffer[bytes] = '\0';
+  printf ("Sende Dauer:%s\n", buffer);
   return 0;
 }
 
@@ -96,7 +99,7 @@ int recv_bwtest(int server)
 {
   char buffer[BUFFER_SIZE];
   int bytes;
-  unsigned long long recv_bytes;
+  unsigned long int recv_bytes;
   fd_set rfds;
   struct timeval timeout;
   struct timeval start_time, end_time;
@@ -132,7 +135,9 @@ int recv_bwtest(int server)
     else
     {
       gettimeofday(&end_time, NULL);
-      printf("Download Bandbreite:%llu\n", recv_bytes/(((end_time.tv_sec*1000+end_time.tv_usec/1000)-(start_time.tv_sec*1000+start_time.tv_usec/1000)-1000)/1000)*8);
+      //printf("Download Bandbreite:%llu\n", recv_bytes/(((end_time.tv_sec*1000+end_time.tv_usec/1000)-(start_time.tv_sec*1000+start_time.tv_usec/1000)-1000)/1000)*8);
+      printf ("Empfangene Bytes: %lu\n", recv_bytes);
+      printf ("Empfangs Dauer: %lu\n", (end_time.tv_sec*1000+end_time.tv_usec/1000)-(start_time.tv_sec*1000+start_time.tv_usec/1000)-1000);
       return 0;
     }
   }

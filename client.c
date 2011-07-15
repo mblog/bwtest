@@ -48,10 +48,11 @@ int version_check (int server)
   if (send(server, buffer, strlen(buffer), 0) == -1)
     {
       perror ("Senden fehlgeschlagen\n");
-      return 1;
+      return 2;
     }
   bytes = recv(server, buffer, sizeof(buffer),0);
-  buffer[bytes] = '\0';
+  buffer[bytes-1] = '\0';
+  printf ("Server Version: %s\n", buffer);
   if (strcmp(buffer, VERSION) != 0)
     return 1;
   return 0;
@@ -88,10 +89,10 @@ int bwtest (int server)
   //fcntl(server, F_SETFL, O_NONBLOCK);
   bytes = recv(server, buffer, sizeof(buffer), 0);
   buffer[bytes] = '\0';
-  printf ("Gesendete Bytes:%s\n", buffer);
+  printf ("Gesendete Bytes: %s\n", buffer);
   bytes = recv(server, buffer, sizeof(buffer), 0);
   buffer[bytes] = '\0';
-  printf ("Sende Dauer:%s\n", buffer);
+  printf ("Sende Dauer: %s\n", buffer);
   return 0;
 }
 
@@ -224,6 +225,10 @@ int main (int argc, char *argv[])
     perror ("Fehler beim senden der Buffersize\n");
     return 3;
   } */
+
+  //dup2(s, STDOUT_FILENO);
+  //dup2(s, STDIN_FILENO);
+  //dup2(s, STDERR_FILENO);
 
   // ToDo
   bwtest(s);

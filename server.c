@@ -114,9 +114,10 @@ int client_behandlung(int client)
         //start = time(NULL);
         gettimeofday(&start_time, NULL);
         first_interval = 0;
-        printf ("Data\n");
+       printf ("Data\n");
       }
       timeout.tv_sec = 1;
+      timeout.tv_usec = 0;
       bytes = recv(client, buffer, sizeof(buffer), 0);
       recv_bytes += bytes;
     }
@@ -132,8 +133,9 @@ int client_behandlung(int client)
   diff = htons(end_time.tv_sec*1000+end_time.tv_usec/1000)-(start_time.tv_sec*1000+start_time.tv_usec/1000)-1000;
   printf ("Send data to client\n");
   //sprintf(buffer, "%u", diff);
-  send(client, &diff, diff, 0);
+  send(client, (void* )diff, diff, 0);
   //sprintf(buffer, "%u", htons(recv_b 
+  send(client, (void*)recv_bytes, recv_bytes,0);
 
   return 0;
 }
@@ -208,6 +210,11 @@ int main (int argc, char *argv[])
     printf ("Socket Buffer Size: %d\n", sock_buf_size);
     ret = setsockopt( s, SOL_SOCKET, SO_SNDBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) );
     ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) );
+
+    //dup2(c, STDOUT_FILENO);
+    //dup2(c, STDIN_FILENO);
+    //dup2(c, STDERR_FILENO);
+
     if (client_behandlung(c) == -1)
 	perror("client_behandlung() failed\n");
     close(c);

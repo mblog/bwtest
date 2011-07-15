@@ -17,7 +17,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#define VERSION "0.21"
+#define VERSION "0.30"
 #define TEST_TIME 10
 #define BUFFER_SIZE 4096
 

@@ -20,7 +20,7 @@
 
 #define TEST_TIME 10
 #define BUFFER_SIZE 4096
-#define VERSION "0.21"
+#define VERSION "0.30"
 
 //char* sock_buf_size;
 

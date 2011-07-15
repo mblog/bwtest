@@ -27,7 +27,7 @@
 int version_check (int server);
 
 /* Send Socket-Buffer-Size to Server */
-int send_socket_buffersize(int server, char * bdp);
+//int send_socket_buffersize(int server, char * bdp);
 
 /* Run Tests with Server */
 int bwtest(int server);
@@ -57,7 +57,7 @@ int version_check (int server)
   return 0;
 }
 
-int send_socket_buffersize(int server, char* bdp)
+/*int send_socket_buffersize(int server, char* bdp)
 {
   if (send(server, bdp, strlen(bdp), 0) == -1)
     {
@@ -65,7 +65,7 @@ int send_socket_buffersize(int server, char* bdp)
       return 1;
     }
   return 0;
-}
+} */
 
 int bwtest (int server)
 {
@@ -158,7 +158,7 @@ int send_bwtest (int server)
 int main (int argc, char *argv[])
 {
   int s, ret;
-  char * sock_buf_size;
+  int sock_buf_size;
   struct sockaddr_in addr;
   struct hostent *host;
 
@@ -193,10 +193,10 @@ int main (int argc, char *argv[])
   }
 
   /* Socket Buffer */
-  sock_buf_size = argv[2];
+  sock_buf_size = 1000000;
 
-  ret = setsockopt( s, SOL_SOCKET, SO_SNDBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
-  ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF, (char *)&sock_buf_size, sizeof(sock_buf_size) );
+  ret = setsockopt( s, SOL_SOCKET, SO_SNDBUF, (void *)&sock_buf_size, sizeof(sock_buf_size) );
+  ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF, (void *)&sock_buf_size, sizeof(sock_buf_size) );
 
 
   // Connect to Server
@@ -214,11 +214,11 @@ int main (int argc, char *argv[])
    }
 
   // Send BDP to Server
-  if (send_socket_buffersize(s, sock_buf_size))
+  /* if (send_socket_buffersize(s, sock_buf_size))
   {
     perror ("Fehler beim senden der Buffersize\n");
     return 3;
-  }
+  } */
 
   // ToDo
   bwtest(s);

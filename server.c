@@ -52,7 +52,7 @@ int check_client_version(int client)
   return 0;
 }
 
-int get_socket_buffersize(int client)
+/*int get_socket_buffersize(int client)
 {
   char buffer[BUFFER_SIZE];
   int bytes;
@@ -60,7 +60,7 @@ int get_socket_buffersize(int client)
   bytes = recv(client, buffer, sizeof(buffer),0);
   buffer[bytes] = '\0';
   return atoi(buffer);
-}
+}*/
 
 int client_behandlung(int client)
 {
@@ -140,8 +140,8 @@ int client_behandlung(int client)
 int main (int argc, char *argv[])
 {
   int s, c, flag, ret;
-  char *sock_buf_size;
-  char bdp[10];
+  int sock_buf_size;
+  //char bdp[10];
   struct sockaddr_in addr;
   struct sockaddr_in cli;
   int cli_size;
@@ -200,11 +200,11 @@ int main (int argc, char *argv[])
       }
 
     // Get Socket Buffer Size from Client
-    sprintf(bdp, "%d", get_socket_buffersize(c));
-    sock_buf_size = bdp;
-    printf ("Socket Buffer Size: %s\n", sock_buf_size);
-    ret = setsockopt( s, SOL_SOCKET, SO_SNDBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
-    ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF,(char *)&sock_buf_size, sizeof(sock_buf_size) );
+    //sprintf(bdp, "%d", get_socket_buffersize(c));
+    sock_buf_size = 1000000;
+    printf ("Socket Buffer Size: %d\n", sock_buf_size);
+    ret = setsockopt( s, SOL_SOCKET, SO_SNDBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) );
+    ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) );
     if (client_behandlung(c) == -1)
 	perror("client_behandlung() failed\n");
     close(c);

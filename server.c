@@ -65,12 +65,14 @@ int check_client_version(int client)
 int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
+  char msg[1024];
   time_t start;
   fd_set rfds;
   int bytes;
-  unsigned long int recv_bytes;
+  unsigned long int *recv_bytes;
+  unsigned long int byte_count;
   //unsigned long long bandwidth;
-  unsigned long int diff;
+  unsigned int *diff;
   struct timeval timeout;
   struct timeval start_time, end_time;
   int first_interval = 1;
@@ -96,7 +98,7 @@ int client_behandlung(int client)
   timeout.tv_sec = 5;
   timeout.tv_usec = 0;
 
-  recv_bytes = 0;
+  byte_count = 0;
 
   while(1)
   {
@@ -114,12 +116,12 @@ int client_behandlung(int client)
         //start = time(NULL);
         gettimeofday(&start_time, NULL);
         first_interval = 0;
-       printf ("Data\n");
+        printf ("Data\n");
       }
       timeout.tv_sec = 1;
       timeout.tv_usec = 0;
       bytes = recv(client, buffer, sizeof(buffer), 0);
-      recv_bytes += bytes;
+      byte_count += bytes;
     }
     else
     {
@@ -130,12 +132,19 @@ int client_behandlung(int client)
     }
   }
 
-  diff = htons(end_time.tv_sec*1000+end_time.tv_usec/1000)-(start_time.tv_sec*1000+start_time.tv_usec/1000)-1000;
+  diff = (unsigned int*) (msg + 4);
+  recv_bytes = (unsigned long int *) (msg + 8);
+  memset(msg, (unsigned char) 0x00, 1024);
+
+  *diff = (end_time.tv_sec*1000+end_time.tv_usec/1000)-(start_time.tv_sec*1000+start_time.tv_usec/1000)-1000;
+  *recv_bytes = byte_count;
   printf ("Send data to client\n");
-  //sprintf(buffer, "%u", diff);
-  send(client, (void* )diff, diff, 0);
-  //sprintf(buffer, "%u", htons(recv_b 
-  send(client, (void*)recv_bytes, recv_bytes,0);
+  //sprintf(buffer, "%u:%lu", diff, byte_count);
+  printf ("Dauer: %u\n", *diff);
+  //send(client, buffer, strlen(buffer), 0);
+  //sprintf(buffer, "%lu", recv_bytes);
+  printf ("Bytes: %lu\n", *recv_bytes);
+  send(client, msg, 1024,0);
 
   return 0;
 }
@@ -164,7 +173,7 @@ int main (int argc, char *argv[])
   }
 
   /* Disable the Nagle (TCP No Delay) algorithm  */
-  /*flag = 1;
+  /* flag = 1;
   ret = setsockopt( s, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(flag) );
   if (ret == -1) {
     printf("Couldn't setsockopt(TCP_NODELAY)\n");

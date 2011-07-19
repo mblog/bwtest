@@ -50,8 +50,8 @@ int version_check (int server)
       perror ("Senden fehlgeschlagen\n");
       return 2;
     }
-  bytes = recv(server, buffer, sizeof(buffer),0);
-  buffer[bytes-1] = '\0';
+  bytes = recv(server, buffer, sizeof(buffer)-1,0);
+  buffer[bytes] = '\0';
   printf ("Server Version: %s\n", buffer);
   if (strcmp(buffer, VERSION) != 0)
     return 1;
@@ -87,12 +87,16 @@ int bwtest (int server)
   // Get Upload-Bandwidth from server
   printf ("Messung fertig\n");
   //fcntl(server, F_SETFL, O_NONBLOCK);
-  bytes = recv(server, buffer, sizeof(buffer), 0);
-  buffer[bytes] = '\0';
-  printf ("Gesendete Bytes: %s\n", buffer);
-  bytes = recv(server, buffer, sizeof(buffer), 0);
-  buffer[bytes] = '\0';
-  printf ("Sende Dauer: %s\n", buffer);
+  bytes = recv(server, buffer, 1024, 0);
+  //buffer[bytes] = '\0';
+  unsigned int *diff;
+  unsigned long int *r_bytes;
+  diff = (unsigned int *)(buffer+4);
+  r_bytes = (unsigned long int *)(buffer + 8);
+  printf ("Sende Dauer: %u\n", *diff);
+  //bytes = recv(server, buffer, sizeof(buffer)-1, 0);
+  //buffer[bytes] = '\0';
+  printf ("Gesendete Bytes : %lu\n", *r_bytes);
   return 0;
 }
 
@@ -130,6 +134,7 @@ int recv_bwtest(int server)
         first_interval = 0;
       }
       timeout.tv_sec = 1;
+      timeout.tv_usec = 0;
       bytes = recv(server, buffer, sizeof(buffer),0); 
       recv_bytes += bytes;
     }

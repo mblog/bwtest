@@ -22,15 +22,10 @@
 #define BUFFER_SIZE 10000
 #define VERSION "0.30"
 
-//char* sock_buf_size;
-
 /* --------- prototypes --------- */
 
 // Check Client-Version
 int check_client_version(int client);
-
-// Get Socket-Buffer-Size from client
-int get_socket_buffersize(int client);
 
 // Todo if client connects
 int client_behandlung(int client);
@@ -52,26 +47,15 @@ int check_client_version(int client)
   return 0;
 }
 
-/*int get_socket_buffersize(int client)
-{
-  char buffer[BUFFER_SIZE];
-  int bytes;
-
-  bytes = recv(client, buffer, sizeof(buffer),0);
-  buffer[bytes] = '\0';
-  return atoi(buffer);
-}*/
-
 int client_behandlung(int client)
 {
   char buffer[BUFFER_SIZE];
-  char msg[1024];
+  char msg[8];
   time_t start;
   fd_set rfds;
   int bytes;
-  unsigned long int *recv_bytes;
+  unsigned int *recv_bytes;
   unsigned long int byte_count;
-  //unsigned long long bandwidth;
   unsigned int *diff;
   struct timeval timeout;
   struct timeval start_time, end_time;
@@ -84,7 +68,6 @@ int client_behandlung(int client)
   while ((time(NULL)-start) < TEST_TIME)
   {
      if (send(client, buffer, BUFFER_SIZE, MSG_NOSIGNAL) < 0)
-     //if (send(client, buffer, BUFFER_SIZE, 0) < 0)
      {
 	perror("Send error\n");
 	return -1;
@@ -100,10 +83,11 @@ int client_behandlung(int client)
   timeout.tv_usec = 0;
 
   byte_count = 0;
+  FD_ZERO(&rfds);
 
   while(1)
   {
-    FD_ZERO(&rfds);
+    //FD_ZERO(&rfds);
     FD_SET(client, &rfds);
 
     // Check Sockets
@@ -114,7 +98,6 @@ int client_behandlung(int client)
       // On First Test-Interval set Start-Time
       if (first_interval == 1)
       {
-        //start = time(NULL);
         gettimeofday(&start_time, NULL);
         first_interval = 0;
         printf ("Data\n");
@@ -128,24 +111,20 @@ int client_behandlung(int client)
     {
       printf("No more data\n");
       gettimeofday(&end_time, NULL);
-      //bandwidth = (recv_bytes/((end_time.tv_sec+end_time.tv_usec/1000000.0)-(start_time.tv_sec+start_time.tv_usec/1000000.0)-1))*8;
       break;
     }
   }
 
-  diff = (unsigned int*) (msg + 4);
-  recv_bytes = (unsigned long int *) (msg + 8);
-  memset(msg, (unsigned char) 0x00, 1024);
+  diff = (unsigned int*) (msg );
+  recv_bytes = (unsigned int *) (msg +4 );
+  memset(msg, (unsigned char) 0x00, 8);
 
   *diff = (end_time.tv_sec*1000+end_time.tv_usec/1000)-(start_time.tv_sec*1000+start_time.tv_usec/1000)-1000;
   *recv_bytes = byte_count;
   printf ("Send data to client\n");
-  //sprintf(buffer, "%u:%lu", diff, byte_count);
-  printf ("Dauer: %u\n", *diff);
-  //send(client, buffer, strlen(buffer), 0);
-  //sprintf(buffer, "%lu", recv_bytes);
-  printf ("Bytes: %lu\n", *recv_bytes);
-  send(client, msg, 1024,0);
+  printf ("Receive Time: %u\n", *diff);
+  printf ("Received Bytes: %u\n", *recv_bytes);
+  send(client, msg, 8,0);
 
   return 0;
 }
@@ -156,7 +135,6 @@ int main (int argc, char *argv[])
 {
   int s, c, flag, ret;
   int sock_buf_size;
-  //char bdp[10];
   struct sockaddr_in addr;
   struct sockaddr_in cli;
   int cli_size;
@@ -180,7 +158,6 @@ int main (int argc, char *argv[])
     printf("Couldn't setsockopt(TCP_NODELAY)\n");
     exit( EXIT_FAILURE );
   } */
-
 
   // Bind Socket
   if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) == -1)
@@ -214,16 +191,21 @@ int main (int argc, char *argv[])
         continue;
       } */
 
-    // Get Socket Buffer Size from Client
-    //sprintf(bdp, "%d", get_socket_buffersize(c));
-    sock_buf_size = 1000000;
-    printf ("Socket Buffer Size: %d\n", sock_buf_size);
-    ret = setsockopt( s, SOL_SOCKET, SO_SNDBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) );
-    ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) ); 
+    // Set Socket Buffer Size 
+    sock_buf_size = 100000;
+    if (setsockopt( c, SOL_SOCKET, SO_SNDBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) ) < 0) {
+	perror ("setsocketopt() failed");
+    }
+    if (setsockopt( c, SOL_SOCKET, SO_RCVBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) ) < 0) {
+	perror ("setsocketopt() failed");
+    }
 
-    //dup2(c, STDOUT_FILENO);
-    //dup2(c, STDIN_FILENO);
-    //dup2(c, STDERR_FILENO);
+    /* enable non-blocking operation */
+      /*  if (fcntl(c, F_SETFL, O_NONBLOCK) < 0) {
+		//printf("-ERR Can't set non-blocking operation: %s\r\n", strerror(errno));
+		close(c);
+		return 1;
+	} */
 
     if (client_behandlung(c) == -1)
 	perror("client_behandlung() failed\n");

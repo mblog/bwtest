@@ -84,6 +84,7 @@ int client_behandlung(int client)
   while ((time(NULL)-start) < TEST_TIME)
   {
      if (send(client, buffer, BUFFER_SIZE, MSG_NOSIGNAL) < 0)
+     //if (send(client, buffer, BUFFER_SIZE, 0) < 0)
      {
 	perror("Send error\n");
 	return -1;
@@ -154,7 +155,7 @@ int client_behandlung(int client)
 int main (int argc, char *argv[])
 {
   int s, c, flag, ret;
-  //int sock_buf_size;
+  int sock_buf_size;
   //char bdp[10];
   struct sockaddr_in addr;
   struct sockaddr_in cli;
@@ -215,10 +216,10 @@ int main (int argc, char *argv[])
 
     // Get Socket Buffer Size from Client
     //sprintf(bdp, "%d", get_socket_buffersize(c));
-    /* sock_buf_size = 1000000;
+    sock_buf_size = 1000000;
     printf ("Socket Buffer Size: %d\n", sock_buf_size);
     ret = setsockopt( s, SOL_SOCKET, SO_SNDBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) );
-    ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) ); */
+    ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) ); 
 
     //dup2(c, STDOUT_FILENO);
     //dup2(c, STDIN_FILENO);

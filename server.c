@@ -173,6 +173,15 @@ int main (int argc, char *argv[])
     return 3;
   }
 
+  sock_buf_size = 1000000;
+  if (setsockopt( s, SOL_SOCKET, SO_SNDBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) ) < 0) {
+        perror ("setsocketopt() failed");
+  }
+  if (setsockopt( s, SOL_SOCKET, SO_RCVBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) ) < 0) {
+        perror ("setsocketopt() failed");
+  }
+
+
   // Accept Client Connection
   for(;;)
   {
@@ -190,15 +199,6 @@ int main (int argc, char *argv[])
         perror("Falsche Client-Version\n"); 
         continue;
       } */
-
-    // Set Socket Buffer Size 
-    sock_buf_size = 100000;
-    if (setsockopt( c, SOL_SOCKET, SO_SNDBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) ) < 0) {
-	perror ("setsocketopt() failed");
-    }
-    if (setsockopt( c, SOL_SOCKET, SO_RCVBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) ) < 0) {
-	perror ("setsocketopt() failed");
-    }
 
     /* enable non-blocking operation */
       /*  if (fcntl(c, F_SETFL, O_NONBLOCK) < 0) {

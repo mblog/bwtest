@@ -154,7 +154,7 @@ int client_behandlung(int client)
 int main (int argc, char *argv[])
 {
   int s, c, flag, ret;
-  int sock_buf_size;
+  //int sock_buf_size;
   //char bdp[10];
   struct sockaddr_in addr;
   struct sockaddr_in cli;
@@ -207,18 +207,18 @@ int main (int argc, char *argv[])
 	continue;
       }
     printf("Client from %s\n", inet_ntoa(cli.sin_addr));
-    if (check_client_version(c) == -1)
+    /*if (check_client_version(c) == -1)
       {
         perror("Falsche Client-Version\n"); 
         continue;
-      }
+      } */
 
     // Get Socket Buffer Size from Client
     //sprintf(bdp, "%d", get_socket_buffersize(c));
-    sock_buf_size = 1000000;
+    /* sock_buf_size = 1000000;
     printf ("Socket Buffer Size: %d\n", sock_buf_size);
     ret = setsockopt( s, SOL_SOCKET, SO_SNDBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) );
-    ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) );
+    ret = setsockopt( s, SOL_SOCKET, SO_RCVBUF,(void *)&sock_buf_size, sizeof(sock_buf_size) ); */
 
     //dup2(c, STDOUT_FILENO);
     //dup2(c, STDIN_FILENO);

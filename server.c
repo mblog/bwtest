@@ -61,19 +61,6 @@ int client_behandlung(int client)
   struct timeval start_time, end_time;
   int first_interval = 1;
 
-  // Send
-  printf ("Send to Client\n");
-  // Set Start-Time and Send to Client
-  start = time(NULL);
-  while ((time(NULL)-start) < TEST_TIME)
-  {
-     if (send(client, buffer, BUFFER_SIZE, MSG_NOSIGNAL) < 0)
-     {
-	perror("Send error\n");
-	return -1;
-     }
-  }
-
   // Receive
   printf ("Receive from client\n");
   //fcntl(client, F_SETFL, O_NONBLOCK);
@@ -125,6 +112,19 @@ int client_behandlung(int client)
   printf ("Receive Time: %u\n", *diff);
   printf ("Received Bytes: %u\n", *recv_bytes);
   send(client, msg, 8,0);
+
+   // Send
+  printf ("Send to Client\n");
+  // Set Start-Time and Send to Client
+  start = time(NULL);
+  while ((time(NULL)-start) < (*diff+500)/1000)
+  {
+     if (send(client, buffer, BUFFER_SIZE, MSG_NOSIGNAL) < 0)
+     {
+	perror("Send error\n");
+	return -1;
+     }
+  }
 
   return 0;
 }

@@ -113,18 +113,19 @@ int client_behandlung(int client)
   printf ("Received Bytes: %u\n", *recv_bytes);
   send(client, msg, 8,0);
 
+  sleep(2);
    // Send
   printf ("Send to Client\n");
   // Set Start-Time and Send to Client
   start = time(NULL);
-  while ((time(NULL)-start) < (*diff+500)/1000)
+  printf ("Sendedauer: %u\n", (*diff+500)/1000);
+  while ((time(NULL)-start) <= ((*diff+500)/1000))
   {
-     if (send(client, buffer, BUFFER_SIZE, MSG_NOSIGNAL) < 0)
-     {
-	perror("Send error\n");
-	return -1;
-     }
+     send(client, buffer, BUFFER_SIZE, MSG_NOSIGNAL);
   }
+
+  // Send Data to Client
+  //send(client, msg, 8,0);
 
   return 0;
 }

@@ -18,7 +18,6 @@
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
 
-#define TEST_TIME 10
 #define BUFFER_SIZE 10000
 #define VERSION "0.30"
 
@@ -37,7 +36,7 @@ int check_client_version(int client)
   char buffer[BUFFER_SIZE];
   int bytes;
 
-  bytes = recv(client, buffer, sizeof(buffer),0);
+  bytes = recv(client, buffer, sizeof(buffer)-1,0);
   buffer[bytes] = '\0';
   printf ("Client Version: %s\n", buffer);
   printf ("Server Version: %s\n", VERSION);
@@ -113,19 +112,17 @@ int client_behandlung(int client)
   printf ("Received Bytes: %u\n", *recv_bytes);
   send(client, msg, 8,0);
 
-  sleep(2);
    // Send
   printf ("Send to Client\n");
   // Set Start-Time and Send to Client
-  start = time(NULL);
   printf ("Sendedauer: %u\n", (*diff+500)/1000);
-  while ((time(NULL)-start) <= ((*diff+500)/1000))
+  start = time(NULL);
+  while ((time(NULL)-start) < ((*diff+500)/1000))
   {
      send(client, buffer, BUFFER_SIZE, MSG_NOSIGNAL);
   }
 
-  // Send Data to Client
-  //send(client, msg, 8,0);
+  close(client);
 
   return 0;
 }
@@ -195,11 +192,11 @@ int main (int argc, char *argv[])
 	continue;
       }
     printf("Client from %s\n", inet_ntoa(cli.sin_addr));
-    /*if (check_client_version(c) == -1)
+    if (check_client_version(c) == -1)
       {
         perror("Falsche Client-Version\n"); 
         continue;
-      } */
+      } 
 
     /* enable non-blocking operation */
       /*  if (fcntl(c, F_SETFL, O_NONBLOCK) < 0) {

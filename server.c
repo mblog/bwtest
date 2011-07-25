@@ -18,8 +18,8 @@
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
 
-#define BUFFER_SIZE 10000
-#define VERSION "0.30"
+#define BUFFER_SIZE 100000
+#define VERSION "0.20"
 
 /* --------- prototypes --------- */
 
@@ -54,7 +54,7 @@ int client_behandlung(int client)
   fd_set rfds;
   int bytes;
   unsigned int *recv_bytes;
-  unsigned long int byte_count;
+  unsigned int byte_count, send_time;
   unsigned int *diff;
   struct timeval timeout;
   struct timeval start_time, end_time;
@@ -91,7 +91,11 @@ int client_behandlung(int client)
       timeout.tv_sec = 1;
       timeout.tv_usec = 0;
       bytes = recv(client, buffer, sizeof(buffer), 0);
-      byte_count += bytes;
+      if (bytes <= 0) {
+        gettimeofday(&end_time, NULL);
+        break;
+       }
+	byte_count += bytes;
     }
     else
     {
@@ -101,23 +105,26 @@ int client_behandlung(int client)
     }
   }
 
-  diff = (unsigned int*) (msg );
-  recv_bytes = (unsigned int *) (msg +4 );
+  send_time = (unsigned int)((end_time.tv_sec*1000+end_time.tv_usec/1000)-(start_time.tv_sec*1000+start_time.tv_usec/1000)-1000);
+
+	// Prepare Message
+  diff = (uint32_t *) msg ;
+  recv_bytes = (uint32_t *) (msg +4 );
   memset(msg, (unsigned char) 0x00, 8);
 
-  *diff = (end_time.tv_sec*1000+end_time.tv_usec/1000)-(start_time.tv_sec*1000+start_time.tv_usec/1000)-1000;
-  *recv_bytes = byte_count;
+  *diff = htonl((uint32_t)send_time);
+  *recv_bytes = htonl((uint32_t)byte_count);
   printf ("Send data to client\n");
-  printf ("Receive Time: %u\n", *diff);
-  printf ("Received Bytes: %u\n", *recv_bytes);
+  printf ("Receive Time: %u\n", send_time);
+  printf ("Received Bytes: %u\n", byte_count);
   send(client, msg, 8,0);
 
    // Send
   printf ("Send to Client\n");
   // Set Start-Time and Send to Client
-  printf ("Sendedauer: %u\n", (*diff+500)/1000);
+  printf ("Sendedauer: %u\n", (send_time+500)/1000);
   start = time(NULL);
-  while ((time(NULL)-start) < ((*diff+500)/1000))
+  while ((time(NULL)-start) < ((send_time+500)/1000))
   {
      send(client, buffer, BUFFER_SIZE, MSG_NOSIGNAL);
   }

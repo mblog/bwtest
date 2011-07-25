@@ -102,7 +102,7 @@ int client_behandlung(int client)
     {
       printf("No more data\n");
       gettimeofday(&end_time, NULL);
-	sned_time =  ((end_time.tv_sec - start_time.tv_sec) * 1000 + (end_time.tv_usec - start_time.tv_usec) / 1000) - 1000;
+	send_time =  ((end_time.tv_sec - start_time.tv_sec) * 1000 + (end_time.tv_usec - start_time.tv_usec) / 1000) - 1000;
       break;
     }
   }

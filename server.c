@@ -19,7 +19,7 @@
 #include <netinet/tcp.h>
 
 #define BUFFER_SIZE 100000
-#define VERSION "0.20"
+#define VERSION "0.21"
 
 /* --------- prototypes --------- */
 
@@ -84,9 +84,11 @@ int client_behandlung(int client)
       // On First Test-Interval set Start-Time
       if (first_interval == 1)
       {
-        gettimeofday(&start_time, NULL);
         first_interval = 0;
-        printf ("Data\n");
+	gettimeofday(&start_time, NULL);
+	//printf ("Data\n");
+	//byte_count = 0;
+	//continue;
       }
       timeout.tv_sec = 1;
       timeout.tv_usec = 0;

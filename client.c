@@ -73,8 +73,9 @@ int main (int argc, char *argv[])
   ret = setsockopt( s, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(flag) );
   if (ret == -1) {
   printf("Couldn't setsockopt(TCP_NODELAY)\n");
-  exit( EXIT_FAILURE );
-} 
+  //exit( EXIT_FAILURE );
+  return 2;
+  } 
 
   ping_back(s);
 

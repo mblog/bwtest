@@ -91,13 +91,23 @@ int main (int argc, char *argv[])
     return 1;
   }
 
+  /* Disable the Nagle (TCP No Delay) algorithm */
+  int flag = 1;
+  ret = setsockopt( s, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(flag) );
+  if (ret == -1) {
+    printf("Couldn't setsockopt(TCP_NODELAY)\n");
+    exit( EXIT_FAILURE );
+  } 
+
   // Bind Socket
   if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) == -1)
   {
     perror("bind() failed");
     return 2;
   }
+  
 
+   
   // Listen
   if (listen(s, 3) == -1)
   {

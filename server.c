@@ -93,6 +93,7 @@ int main (int argc, char *argv[])
 
   /* Disable the Nagle (TCP No Delay) algorithm */
   int flag = 1;
+  int ret;
   ret = setsockopt( s, IPPROTO_TCP, TCP_NODELAY, (char *)&flag, sizeof(flag) );
   if (ret == -1) {
     printf("Couldn't setsockopt(TCP_NODELAY)\n");

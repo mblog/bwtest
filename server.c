@@ -90,7 +90,7 @@ int client_behandlung(int client)
 	//byte_count = 0;
 	//continue;
       }
-      timeout.tv_sec = 1;
+      timeout.tv_sec = 3;
       timeout.tv_usec = 0;
       bytes = recv(client, buffer, sizeof(buffer), 0);
       if (bytes <= 0) {
@@ -104,7 +104,7 @@ int client_behandlung(int client)
     {
       printf("No more data\n");
       gettimeofday(&end_time, NULL);
-	send_time =  ((end_time.tv_sec - start_time.tv_sec) * 1000 + (end_time.tv_usec - start_time.tv_usec) / 1000) - 1000;
+	send_time =  ((end_time.tv_sec - start_time.tv_sec) * 1000 + (end_time.tv_usec - start_time.tv_usec) / 1000) - 3000;
       break;
     }
   }
